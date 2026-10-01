@@ -401,12 +401,18 @@
         </div>
       </div>
 
-      <!-- Quick Admin Utilities Bar -->
+      <!-- Quick Admin Utilities Bar (Add, Notice, Bulk Fee Messages, Backup) -->
       <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex flex-wrap gap-2 items-center justify-between shadow-md">
-        <div class="flex items-center gap-2">
+        <div class="flex flex-wrap items-center gap-2">
           <button onclick="openStudentModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95">
             <i class="fas fa-user-plus"></i>
             <span>Add Student</span>
+          </button>
+
+          <!-- NEW: Bulk WhatsApp Fee Reminder / Message Button -->
+          <button onclick="openBulkFeeMessageModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95">
+            <i class="fab fa-whatsapp text-sm"></i>
+            <span>Send Bulk Fee Messages</span>
           </button>
 
           <button onclick="openNoticeBroadcastModal()" class="bg-slate-800 hover:bg-slate-750 text-amber-300 font-semibold text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition active:scale-95">
@@ -435,21 +441,41 @@
         <div class="space-y-2" id="currentlyPresentRoster"></div>
       </div>
 
-      <!-- Student Directory with Search, WhatsApp Invite & Fee Reminder -->
+      <!-- Student Directory with FILTER TABS (All / Due / Paid) & Search -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
           <div>
             <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
               <i class="fas fa-address-book text-cyan-400"></i>
-              <span>Student Directory & Direct Invite</span>
+              <span>Student Directory & Fee Status</span>
             </h3>
-            <p class="text-[11px] text-slate-400">Click WhatsApp button to send direct app link</p>
+            <p class="text-[11px] text-slate-400">Filter students by fee status and send reminders</p>
           </div>
 
           <div class="relative">
             <i class="fas fa-search absolute left-3 top-2.5 text-xs text-slate-500"></i>
             <input type="text" id="adminSearchInput" onkeyup="filterAdminStudentRoster()" placeholder="Search name or phone..." class="bg-slate-950 border border-slate-800 text-xs text-slate-200 pl-8 pr-3 py-1.5 rounded-xl w-full sm:w-48 focus:border-cyan-400 outline-none">
           </div>
+        </div>
+
+        <!-- NEW: Filter Buttons Bar -->
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-800 mb-3 overflow-x-auto scrollbar-none">
+          <button id="filterBtnAll" onclick="setFeeFilter('all')" class="text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-cyan-500 text-slate-950">
+            <span>All Students</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-950/20 text-slate-950 font-black" id="countFilterAll">0</span>
+          </button>
+
+          <button id="filterBtnDue" onclick="setFeeFilter('due')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-amber-300 border border-slate-700 hover:bg-slate-750">
+            <i class="fas fa-exclamation-circle text-[10px]"></i>
+            <span>Due / Pending</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/20 text-amber-300 font-bold" id="countFilterDue">0</span>
+          </button>
+
+          <button id="filterBtnPaid" onclick="setFeeFilter('paid')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-emerald-400 border border-slate-700 hover:bg-slate-750">
+            <i class="fas fa-check-circle text-[10px]"></i>
+            <span>Fee Paid</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 font-bold" id="countFilterPaid">0</span>
+          </button>
         </div>
 
         <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-none" id="adminStudentRosterContainer"></div>
@@ -529,6 +555,77 @@
         </div>
         <p class="text-[10px] text-rose-400 mt-1 hidden" id="pinErrorAlert">गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।</p>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Bulk Fee Messages on WhatsApp (NEW FEATURE) -->
+  <div id="bulkMessageModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeBulkFeeMessageModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="flex items-center gap-2 mb-1">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm font-bold">
+          <i class="fab fa-whatsapp"></i>
+        </div>
+        <h3 class="text-base font-extrabold text-white">Bulk Fee Messages</h3>
+      </div>
+      <p class="text-xs text-slate-400 mb-4">एक साथ छात्रों को फ़ीस रिमाइंडर या मैसेज भेजें</p>
+
+      <!-- Selection Filter (Radio / Check) -->
+      <div class="space-y-2 mb-4 bg-slate-950/70 p-3 rounded-2xl border border-slate-800">
+        <p class="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">किन छात्रों को भेजना है? (Target Audience)</p>
+        
+        <label class="flex items-center space-x-2.5 cursor-pointer p-2 rounded-xl hover:bg-slate-900 transition">
+          <input type="radio" name="bulkRecipientType" value="due" checked onchange="updateBulkMessagePreview()" class="w-4 h-4 text-amber-500 bg-slate-950 border-slate-700">
+          <div>
+            <span class="text-xs font-bold text-amber-300">केवल फ़ीस बाकी वाले (Only Fee Due)</span>
+            <p class="text-[10px] text-slate-400">जिनका स्टेटस Pending है</p>
+          </div>
+        </label>
+
+        <label class="flex items-center space-x-2.5 cursor-pointer p-2 rounded-xl hover:bg-slate-900 transition">
+          <input type="radio" name="bulkRecipientType" value="paid" onchange="updateBulkMessagePreview()" class="w-4 h-4 text-emerald-500 bg-slate-950 border-slate-700">
+          <div>
+            <span class="text-xs font-bold text-emerald-400">केवल फ़ीस जमा वाले (Only Fee Paid)</span>
+            <p class="text-[10px] text-slate-400">धन्यवाद या सामान्य सूचना संदेश</p>
+          </div>
+        </label>
+
+        <label class="flex items-center space-x-2.5 cursor-pointer p-2 rounded-xl hover:bg-slate-900 transition">
+          <input type="radio" name="bulkRecipientType" value="both" onchange="updateBulkMessagePreview()" class="w-4 h-4 text-cyan-400 bg-slate-950 border-slate-700">
+          <div>
+            <span class="text-xs font-bold text-cyan-300">दोनों / सभी छात्र (All Students)</span>
+            <p class="text-[10px] text-slate-400">लाइब्रेरी के सभी नामांकित छात्र</p>
+          </div>
+        </label>
+      </div>
+
+      <!-- Message Text Area -->
+      <div class="mb-4">
+        <label class="block text-xs font-semibold text-slate-300 mb-1">मैसेज का ड्राफ्ट (Customizable Message):</label>
+        <textarea id="bulkMessageCustomText" rows="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-cyan-400 font-sans"></textarea>
+        <p class="text-[10px] text-slate-500 mt-1">नोट: छात्र का नाम, प्लान और लाइब्रेरी का पता अपने आप मैसेज में जुड़ जाएगा।</p>
+      </div>
+
+      <!-- Recipients List Counter & Queue -->
+      <div class="mb-4">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-bold text-slate-300">मैसेज पाने वाले छात्र:</span>
+          <span class="font-black text-cyan-400" id="bulkRecipientsCountBadge">0 Students Selected</span>
+        </div>
+        <div class="max-h-40 overflow-y-auto space-y-1.5 pr-1 scrollbar-none" id="bulkRecipientsPreviewList"></div>
+      </div>
+
+      <p class="text-[10px] text-slate-400 text-center mb-3">
+        नीचे दिए गए बटन से छात्रों की WhatsApp चैट क्रमबद्ध रूप से खुलेगी।
+      </p>
+
+      <button onclick="startBulkDispatch()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95">
+        <i class="fab fa-whatsapp text-base"></i>
+        <span>WhatsApp चैट ओपन करें (Start Sending)</span>
+      </button>
     </div>
   </div>
 
@@ -723,7 +820,7 @@
       address: "Behind Hanuman Mandir, Ramgarh",
       phone: "9140176272",
       email: "ashirvadyadavv@gmail.com",
-      adminPin: "Akhil@9140", /* UPDATED ADMIN PASSWORD */
+      adminPin: "Akhil@9140",
       totalSeats: 30
     };
 
@@ -773,6 +870,7 @@
     let currentRole = 'student';
     let studyTimerInterval = null;
     let pwaInstallPrompt = null;
+    let activeFeeFilter = 'all'; // 'all', 'due', 'paid'
 
     // STARTUP NOTICE POPUP
     function closeStartupNotice() {
@@ -783,7 +881,7 @@
       }, 300);
     }
 
-    // ROBUST URL PARAMETER PARSER (Direct Student Auto-Login from WhatsApp Link)
+    // ROBUST URL PARAMETER PARSER
     function handleIncomingUrlInvite() {
       const params = new URLSearchParams(window.location.search);
       const inviteData = params.get('join');
@@ -1082,10 +1180,35 @@
       renderStudentPortal();
     }
 
+    /* FEE FILTER LOGIC: ALL / DUE / PAID */
+    function setFeeFilter(filterType) {
+      activeFeeFilter = filterType;
+      
+      const btnAll = document.getElementById('filterBtnAll');
+      const btnDue = document.getElementById('filterBtnDue');
+      const btnPaid = document.getElementById('filterBtnPaid');
+
+      // Reset Styles
+      btnAll.className = "text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-750";
+      btnDue.className = "text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-amber-300 border border-slate-700 hover:bg-slate-750";
+      btnPaid.className = "text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-emerald-400 border border-slate-700 hover:bg-slate-750";
+
+      if (filterType === 'all') {
+        btnAll.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-cyan-500 text-slate-950";
+      } else if (filterType === 'due') {
+        btnDue.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-amber-500 text-slate-950";
+      } else if (filterType === 'paid') {
+        btnPaid.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-emerald-500 text-slate-950";
+      }
+
+      filterAdminStudentRoster();
+    }
+
     function renderAdminDashboard() {
       const presentCount = students.filter(s => s.status === 'In Library').length;
       const totalCount = students.length;
       const feePendingCount = students.filter(s => s.feeStatus === 'Pending').length;
+      const feePaidCount = students.filter(s => s.feeStatus === 'Paid').length;
 
       let totalCollected = 0;
       students.forEach(s => {
@@ -1103,8 +1226,13 @@
       document.getElementById('metricPendingFeeCount').innerText = feePendingCount;
       document.getElementById('adminPresentBadge').innerText = `${presentCount} Active in Hall`;
 
+      // Update Filter Badges
+      document.getElementById('countFilterAll').innerText = totalCount;
+      document.getElementById('countFilterDue').innerText = feePendingCount;
+      document.getElementById('countFilterPaid').innerText = feePaidCount;
+
       renderPresentRoster();
-      renderAdminStudentDirectory();
+      filterAdminStudentRoster();
       renderAdminTickets();
       renderMovementHistoryLogs();
     }
@@ -1133,7 +1261,7 @@
               <div>
                 <div class="flex items-center gap-2">
                   <h4 class="text-xs font-bold text-white">${s.name}</h4>
-                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-808">${s.desk || 'General'}</span>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">${s.desk || 'General'}</span>
                 </div>
                 <p class="text-[10px] text-slate-400">Duration: <strong class="text-slate-200">${hrs}h ${mins}m</strong> • ${s.plan}</p>
               </div>
@@ -1151,18 +1279,25 @@
       const container = document.getElementById('adminStudentRosterContainer');
       const q = filter.toLowerCase();
 
-      const matched = students.filter(s =>
-        s.name.toLowerCase().includes(q) ||
-        s.phone.includes(q) ||
-        (s.desk && s.desk.toLowerCase().includes(q))
-      );
+      let filteredList = students.filter(s => {
+        // Status filter
+        if (activeFeeFilter === 'due' && s.feeStatus !== 'Pending') return false;
+        if (activeFeeFilter === 'paid' && s.feeStatus !== 'Paid') return false;
+        
+        // Search filter
+        return (
+          s.name.toLowerCase().includes(q) ||
+          s.phone.includes(q) ||
+          (s.desk && s.desk.toLowerCase().includes(q))
+        );
+      });
 
-      if (matched.length === 0) {
-        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">कोई विद्यार्थी रिकॉर्ड नहीं मिला।</div>`;
+      if (filteredList.length === 0) {
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">कोई विद्यार्थी रिकॉर्ड नहीं मिला (Filter: ${activeFeeFilter.toUpperCase()})।</div>`;
         return;
       }
 
-      container.innerHTML = matched.map(s => `
+      container.innerHTML = filteredList.map(s => `
         <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <div class="flex items-center space-x-3">
             <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-cyan-300">
@@ -1171,7 +1306,7 @@
             <div>
               <div class="flex items-center gap-1.5">
                 <span class="text-xs font-bold text-white">${s.name}</span>
-                <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold ${s.feeStatus === 'Paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold ${s.feeStatus === 'Paid' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
                   ${s.feeStatus}
                 </span>
                 <span class="text-[10px] text-slate-400">${s.desk || 'No desk'}</span>
@@ -1210,6 +1345,113 @@
     function filterAdminStudentRoster() {
       const q = document.getElementById('adminSearchInput').value;
       renderAdminStudentDirectory(q);
+    }
+
+    /* ================= BULK FEE MESSAGE LOGIC (NEW) ================= */
+    function openBulkFeeMessageModal() {
+      document.getElementById('bulkMessageModal').classList.remove('hidden');
+      updateBulkMessagePreview();
+    }
+
+    function closeBulkFeeMessageModal() {
+      document.getElementById('bulkMessageModal').classList.add('hidden');
+    }
+
+    function getSelectedRecipients() {
+      const radios = document.getElementsByName('bulkRecipientType');
+      let targetType = 'due';
+      for (const r of radios) {
+        if (r.checked) {
+          targetType = r.value;
+          break;
+        }
+      }
+
+      if (targetType === 'due') {
+        return { type: 'due', list: students.filter(s => s.feeStatus === 'Pending') };
+      } else if (targetType === 'paid') {
+        return { type: 'paid', list: students.filter(s => s.feeStatus === 'Paid') };
+      } else {
+        return { type: 'both', list: [...students] };
+      }
+    }
+
+    function updateBulkMessagePreview() {
+      const { type, list } = getSelectedRecipients();
+      const countBadge = document.getElementById('bulkRecipientsCountBadge');
+      const listContainer = document.getElementById('bulkRecipientsPreviewList');
+      const customTextArea = document.getElementById('bulkMessageCustomText');
+
+      countBadge.innerText = `${list.length} Students Selected`;
+
+      // Set default draft according to type
+      if (type === 'due') {
+        customTextArea.value = "यह Baba Kinaram Digital Library से आपकी मासिक फीस रिन्यूअल का रिमाइंडर है। कृपया अध्ययन में बाधा से बचने के लिए अपनी सीट का नवीनीकरण कराएं। PhonePe/GPay: 9140176272";
+      } else if (type === 'paid') {
+        customTextArea.value = "आपकी मासिक लाइब्रेरी फ़ीस जमा है। बाबा कीनाराम डिजिटल लाइब्रेरी में शांति और अनुशासन बनाए रखने के लिए धन्यवाद। मन लगाकर पढ़ाई करें!";
+      } else {
+        customTextArea.value = "बाबा कीनाराम डिजिटल लाइब्रेरी (Behind Hanuman Mandir, Ramgarh) की ओर से आवश्यक सूचना। कृपया अपने स्टडी प्लान और समय का ध्यान रखें।";
+      }
+
+      if (list.length === 0) {
+        listContainer.innerHTML = `<div class="p-2 text-center text-[11px] text-slate-500">इस श्रेणी में कोई छात्र नहीं है।</div>`;
+        return;
+      }
+
+      listContainer.innerHTML = list.map(s => `
+        <div class="p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="w-2 h-2 rounded-full ${s.feeStatus === 'Paid' ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
+            <span class="font-semibold text-slate-200">${s.name}</span>
+            <span class="text-[10px] text-slate-400 font-mono">${s.phone}</span>
+          </div>
+          <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${s.feeStatus === 'Paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+            ${s.feeStatus}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function startBulkDispatch() {
+      const { list } = getSelectedRecipients();
+      const baseNote = document.getElementById('bulkMessageCustomText').value.trim();
+
+      if (list.length === 0) {
+        alert("भेजने के लिए कोई छात्र उपलब्ध नहीं है!");
+        return;
+      }
+
+      // First student direct open, with queue alert
+      const confirmSend = confirm(`कुल ${list.length} छात्रों को WhatsApp संदेश भेजा जाएगा। क्या आप शुरू करना चाहते हैं?`);
+      if (!confirmSend) return;
+
+      closeBulkFeeMessageModal();
+
+      let currentIndex = 0;
+
+      function sendNext() {
+        if (currentIndex >= list.length) {
+          alert("सभी चयनित छात्रों को मैसेज भेजने की प्रक्रिया पूरी हो गई!");
+          return;
+        }
+
+        const s = list[currentIndex];
+        const statusText = s.feeStatus === 'Paid' ? 'Paid (जमा है)' : 'Due / Pending (बाकी है)';
+        const fullMsg = `नमस्ते *${s.name}* जी! 📚%0A%0A*Baba Kinaram Digital Library*%0A📍 Behind Hanuman Mandir, Ramgarh%0A━━━━━━━━━━━━━━━━━━━━%0A📌 *Plan:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* ${encodeURIComponent(statusText)}%0A━━━━━━━━━━━━━━━━━━━━%0A${encodeURIComponent(baseNote)}%0A%0Aधन्यवाद! 🙏`;
+
+        window.open(`https://wa.me/91${s.phone}?text=${fullMsg}`, '_blank');
+        currentIndex++;
+
+        if (currentIndex < list.length) {
+          setTimeout(() => {
+            if (confirm(`[${currentIndex}/${list.length}] भेजा गया। क्या अगले छात्र (${list[currentIndex].name}) का WhatsApp खोलें?`)) {
+              sendNext();
+            }
+          }, 800);
+        }
+      }
+
+      sendNext();
     }
 
     function generateStudentPersonalLink(student) {
@@ -1407,7 +1649,6 @@
       renderAdminTickets();
     }
 
-    /* RENDER TICKETS WITH RESOLVE & DELETE BUTTON */
     function renderAdminTickets() {
       const container = document.getElementById('adminIssuesListContainer');
       document.getElementById('adminTicketCountBadge').innerText = `${deskIssues.length} Tickets`;
@@ -1451,7 +1692,6 @@
       }
     }
 
-    /* COMPLAINT DELETE FUNCTION */
     function deleteIssueTicket(id) {
       if (confirm("क्या आप इस शिकायत टिकट को हटाना चाहते हैं?")) {
         deskIssues = deskIssues.filter(item => item.id !== id);
