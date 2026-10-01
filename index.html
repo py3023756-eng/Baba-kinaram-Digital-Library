@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#091e3a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Baba Kinaram Digital Library - Management App</title>
+  <title>Digital Library - Baba Kinaram Digital Library Management</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -77,23 +77,23 @@
 
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
 
-  <!-- ================= 1. SECURITY GATEWAY / LOGIN SCREEN (INITIAL SCREEN) ================= -->
+  <!-- ================= 1. SECURITY GATEWAY / LOGIN SCREEN ================= -->
   <div id="authGatewayScreen" class="fixed inset-0 bg-slate-950 z-50 flex items-center justify-center p-4 overflow-y-auto">
     <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative">
       
-      <!-- Library Branding -->
+      <!-- Library Branding & Logo -->
       <div class="text-center mb-6">
-        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-cyan-600 to-sky-400 flex items-center justify-center shadow-lg shadow-cyan-500/25 text-white font-black text-2xl">
-          BK
+        <div class="w-20 h-20 mx-auto mb-3 rounded-2xl p-1 bg-gradient-to-tr from-amber-500 to-yellow-300 shadow-xl shadow-amber-500/20 flex items-center justify-center overflow-hidden">
+          <img src="logo.png" alt="Baba Kinaram Digital Library" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null; this.src='https://placehold.co/100x100/091e3a/eab308?text=BKDL';">
         </div>
-        <h2 class="text-xl font-black text-white">Baba Kinaram Digital Library</h2>
-        <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt text-cyan-400 text-[10px]"></i> Behind Hanuman Mandir, Ramgarh</p>
-        <p class="text-[11px] text-emerald-400 font-semibold mt-1">Timings: 7:00 AM – 9:00 PM (Daily)</p>
+        <h2 class="text-xl font-black text-white tracking-tight">Baba Kinaram Digital Library</h2>
+        <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt text-amber-400 text-[10px]"></i> Behind Hanuman Mandir, Ramgarh</p>
+        <p class="text-[11px] text-emerald-400 font-semibold mt-1">Operational Hours: 7:00 AM – 9:00 PM Daily</p>
       </div>
 
-      <!-- Step A: Role Selection (Student vs Admin) -->
+      <!-- Role Selector -->
       <div id="roleSelectorBox" class="space-y-4">
-        <p class="text-center text-xs font-bold text-slate-300 uppercase tracking-wider">Aap kya hain? (Select Who You Are)</p>
+        <p class="text-center text-xs font-bold text-slate-300 uppercase tracking-wider">Select Your Role</p>
 
         <div class="grid grid-cols-2 gap-3">
           <button onclick="selectLoginMode('student')" class="p-5 rounded-2xl border border-cyan-500/40 bg-cyan-950/20 hover:bg-cyan-950/40 text-center transition transform active:scale-95 group shadow-lg shadow-cyan-950/30">
@@ -101,7 +101,7 @@
               <i class="fas fa-user-graduate"></i>
             </div>
             <p class="text-sm font-extrabold text-white">Student</p>
-            <p class="text-[10px] text-cyan-300 mt-0.5">Vidhyarthi Login</p>
+            <p class="text-[10px] text-cyan-300 mt-0.5">Portal Access</p>
           </button>
 
           <button onclick="selectLoginMode('admin')" class="p-5 rounded-2xl border border-amber-500/40 bg-amber-950/20 hover:bg-amber-950/40 text-center transition transform active:scale-95 group shadow-lg shadow-amber-950/30">
@@ -109,12 +109,12 @@
               <i class="fas fa-user-shield"></i>
             </div>
             <p class="text-sm font-extrabold text-white">Admin / Owner</p>
-            <p class="text-[10px] text-amber-300 mt-0.5">Library Sanchalak</p>
+            <p class="text-[10px] text-amber-300 mt-0.5">Management</p>
           </button>
         </div>
       </div>
 
-      <!-- Step B: Student Authentication Box -->
+      <!-- Student Authentication Box -->
       <div id="studentAuthBox" class="hidden space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-800">
           <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider"><i class="fas fa-user-graduate mr-1"></i> Student Login</span>
@@ -122,26 +122,26 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Apna Naam Chunein (Select Name) *</label>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Select Your Name *</label>
           <select id="loginStudentSelect" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-cyan-400">
             <!-- Dynamically Populated -->
           </select>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Password / Registered 10-digit Phone *</label>
-          <input type="password" id="loginStudentPhone" maxlength="10" placeholder="10-digit phone number..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-cyan-400 tracking-wider">
-          <p class="text-[10px] text-slate-400 mt-1">Suraksha ke liye aapka registered phone number hi password hai.</p>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Password (Registered 10-Digit Phone) *</label>
+          <input type="password" id="loginStudentPhone" maxlength="10" placeholder="Enter your 10-digit number..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-cyan-400 tracking-wider">
+          <p class="text-[10px] text-slate-400 mt-1">For safety, your registered contact number acts as your password.</p>
         </div>
 
-        <p id="studentLoginError" class="text-xs text-rose-400 hidden"><i class="fas fa-circle-exclamation mr-1"></i> Galat mobile number! Kripya sahi number dalein.</p>
+        <p id="studentLoginError" class="text-xs text-rose-400 hidden"><i class="fas fa-circle-exclamation mr-1"></i> Invalid credentials! Please check your contact number.</p>
 
         <button onclick="submitStudentLogin()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-sky-500 hover:from-cyan-600 hover:to-sky-600 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-cyan-500/20 active:scale-95 transition">
-          Surakshit Portal Kholein
+          Secure Login
         </button>
       </div>
 
-      <!-- Step C: Admin Authentication Box -->
+      <!-- Admin Authentication Box -->
       <div id="adminAuthBox" class="hidden space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-800">
           <span class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fas fa-user-shield mr-1"></i> Admin Authentication</span>
@@ -149,11 +149,11 @@
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Admin Password Dalein *</label>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Enter Master Password *</label>
           <input type="password" id="loginAdminPassword" placeholder="Admin Secret Password..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400 tracking-widest">
         </div>
 
-        <p id="adminLoginError" class="text-xs text-rose-400 hidden"><i class="fas fa-circle-exclamation mr-1"></i> Galat password! Kripya sahi password dalein.</p>
+        <p id="adminLoginError" class="text-xs text-rose-400 hidden"><i class="fas fa-circle-exclamation mr-1"></i> Incorrect password! Access denied.</p>
 
         <button onclick="submitAdminLogin()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-slate-950 font-black text-xs rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition">
           Unlock Admin Dashboard
@@ -167,13 +167,13 @@
   <header class="bg-brand-900/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40 px-4 py-2.5 shadow-xl">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-2.5">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white font-black text-sm">
-          BK
+        <div class="w-9 h-9 rounded-xl overflow-hidden p-0.5 bg-gradient-to-tr from-amber-500 to-yellow-300 flex items-center justify-center shadow-lg shadow-amber-500/20">
+          <img src="logo.png" alt="Logo" class="w-full h-full object-cover rounded-lg" onerror="this.onerror=null; this.src='https://placehold.co/50x50/091e3a/eab308?text=BKDL';">
         </div>
         <div>
           <h1 class="text-sm font-extrabold text-white tracking-tight flex items-center gap-1.5">
             Baba Kinaram
-            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Digital</span>
+            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">DIGITAL LIBRARY</span>
           </h1>
           <p class="text-[11px] text-slate-400 flex items-center gap-1">
             <i class="fas fa-map-marker-alt text-cyan-400 text-[9px]"></i> Behind Hanuman Mandir, Ramgarh
@@ -181,7 +181,7 @@
         </div>
       </div>
 
-      <!-- Header Action Controls -->
+      <!-- Action Controls -->
       <div class="flex items-center space-x-2">
         <button id="pwaInstallBannerBtn" onclick="triggerPwaInstall()" class="hidden text-[11px] bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-2.5 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
           <i class="fas fa-arrow-down-to-bracket text-xs"></i>
@@ -206,7 +206,7 @@
         </span>
         <span class="text-[9px] font-extrabold uppercase tracking-wider bg-amber-500/30 text-amber-300 px-1.5 py-0.5 rounded shrink-0">Notice</span>
         <p id="noticeBannerMessage" class="truncate font-medium text-amber-100/90 text-xs">
-          Shaant vatavaran banaye rakhein. 1-2 ghante ka demo upalabdh hai.
+          Maintain silence in study halls. 1-2 hours free demo is available.
         </p>
       </div>
       <button onclick="hideNoticeBanner()" class="text-amber-400 hover:text-amber-200 ml-2 shrink-0">
@@ -218,7 +218,7 @@
   <!-- Main Application Body -->
   <main class="flex-1 max-w-2xl w-full mx-auto p-4 pb-36 space-y-4">
     
-    <!-- ================= 1. SECURE STUDENT VIEW (STRICTLY ISOLATED) ================= -->
+    <!-- ================= 1. SECURE STUDENT VIEW ================= -->
     <section id="studentPortalSection" class="space-y-4">
       
       <!-- Student Profile Card -->
@@ -228,16 +228,16 @@
         <div class="flex items-center justify-between relative z-10">
           <div class="flex items-center space-x-3">
             <div class="w-12 h-12 rounded-xl bg-slate-800/90 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-black shadow-inner" id="activeStudentInitials">
-              R
+              S
             </div>
             <div>
               <div class="flex items-center gap-2">
-                <h2 class="text-base font-extrabold text-white tracking-wide" id="activeStudentName">Rahul Kumar</h2>
+                <h2 class="text-base font-extrabold text-white tracking-wide" id="activeStudentName">Shreyansh</h2>
                 <span id="activeStudentDeskTag" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                  Desk #04
+                  Seat #04
                 </span>
               </div>
-              <p class="text-xs text-slate-400 mt-0.5" id="activeStudentPhone">+91 9140176272</p>
+              <p class="text-xs text-slate-400 mt-0.5" id="activeStudentPhone">+91 9231XXXX61</p>
             </div>
           </div>
 
@@ -287,13 +287,13 @@
             00:00:00
           </div>
           <p class="text-xs text-slate-400" id="liveTimerSubtitle">
-            Hall me aate hi Check-In dabayein
+            Press Check-In upon entering the study hall
           </p>
         </div>
 
         <button id="mainAttendanceBtn" onclick="toggleStudentAttendance()" class="w-full py-4 px-6 rounded-xl font-extrabold text-base transition-all duration-200 transform active:scale-95 shadow-xl flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-emerald-500/20">
           <i class="fas fa-right-to-bracket text-lg"></i>
-          <span>Check-In / Upasthiti Darj Karein</span>
+          <span>Check-In Now</span>
         </button>
 
         <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
@@ -320,12 +320,12 @@
           </div>
           <div>
             <h4 class="text-xs font-bold text-white group-hover:text-amber-400 transition">Report Issue</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5">Socket, AC, Light</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Socket, AC, Lighting</p>
           </div>
         </button>
       </div>
 
-      <!-- Fees Card (Updated with Shift 1 & Shift 2) -->
+      <!-- Fees Card (Shift 1 & Shift 2 Updated) -->
       <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -344,7 +344,7 @@
               <span class="font-bold text-white">Shift 1 (Morning)</span>
               <span class="font-black text-cyan-300">₹400<span class="text-[10px] font-normal text-slate-400">/mo</span></span>
             </div>
-            <p class="text-[10px] text-cyan-400 mt-0.5 font-medium">7:00 AM – 2:00 PM (7 Ghante)</p>
+            <p class="text-[10px] text-cyan-400 mt-0.5 font-medium">7:00 AM – 2:00 PM (7 Hours)</p>
           </div>
 
           <!-- Shift 2 -->
@@ -353,16 +353,16 @@
               <span class="font-bold text-white">Shift 2 (Evening)</span>
               <span class="font-black text-emerald-400">₹400<span class="text-[10px] font-normal text-slate-400">/mo</span></span>
             </div>
-            <p class="text-[10px] text-emerald-400 mt-0.5 font-medium">2:00 PM – 9:00 PM (7 Ghante)</p>
+            <p class="text-[10px] text-emerald-400 mt-0.5 font-medium">2:00 PM – 9:00 PM (7 Hours)</p>
           </div>
 
           <!-- Full Day -->
           <div class="p-2.5 rounded-xl bg-slate-950/70 border border-sky-500/40 bg-sky-950/20">
             <div class="flex justify-between items-center">
-              <span class="font-bold text-white">Full Day (14 Ghante)</span>
+              <span class="font-bold text-white">Full Day (14 Hours)</span>
               <span class="font-black text-sky-300">₹600<span class="text-[10px] font-normal text-slate-400">/mo</span></span>
             </div>
-            <p class="text-[10px] text-slate-400 mt-0.5">7:00 AM to 9:00 PM • Fixed Seat</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">7:00 AM – 9:00 PM • Dedicated Seat</p>
           </div>
 
           <!-- Short Term Plans -->
@@ -371,7 +371,7 @@
               <span class="font-semibold text-slate-200">10 / 15 Days Plan</span>
               <span class="font-black text-amber-400">₹200 / ₹300</span>
             </div>
-            <p class="text-[10px] text-slate-400 mt-0.5">Exam Revision Special Access</p>
+            <p class="text-[10px] text-slate-400 mt-0.5">Exam Revision Access</p>
           </div>
         </div>
       </div>
@@ -420,7 +420,7 @@
         </div>
       </div>
 
-      <!-- Quick Admin Utilities Bar -->
+      <!-- Admin Utilities Bar -->
       <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex flex-wrap gap-2 items-center justify-between shadow-md">
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="openStudentModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95">
@@ -504,7 +504,7 @@
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
             <i class="fas fa-wrench text-amber-400"></i>
-            <span>Desk Tickets & Maintenance</span>
+            <span>Maintenance & Support Tickets</span>
           </h3>
           <span class="text-[11px] text-slate-400" id="adminTicketCountBadge">0 Tickets</span>
         </div>
@@ -512,12 +512,12 @@
         <div class="space-y-2" id="adminIssuesListContainer"></div>
       </div>
 
-      <!-- Full Attendance History Log -->
+      <!-- Complete Movement Log -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
             <i class="fas fa-clock-rotate-left text-slate-400"></i>
-            <span>Today's Complete Movement Log</span>
+            <span>Daily Movement History Log</span>
           </h3>
           <button onclick="clearAllLogs()" class="text-[11px] text-rose-400 hover:underline">Clear History</button>
         </div>
@@ -529,11 +529,11 @@
 
   </main>
 
-  <!-- ================= PERMANENT FIXED FLOATING WATERMARK ================= -->
+  <!-- ================= PERMANENT FIXED WATERMARK ================= -->
   <div class="fixed bottom-14 left-0 right-0 z-30 pointer-events-none flex justify-center px-4">
-    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-950/85 border border-cyan-500/40 backdrop-blur-md shadow-2xl shadow-cyan-500/20">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-950/85 border border-amber-500/40 backdrop-blur-md shadow-2xl shadow-amber-500/20">
       <span class="text-yellow-400 text-xs animate-bounce">⚡</span>
-      <span class="font-curly text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 watermark-motion">
+      <span class="font-curly text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-amber-300 to-emerald-400 watermark-motion">
         Powered by ASHIR X PRO
       </span>
     </div>
@@ -577,33 +577,33 @@
         </div>
         <h3 class="text-base font-extrabold text-white">Bulk Fee Messages</h3>
       </div>
-      <p class="text-xs text-slate-400 mb-4">Ek sath sabhi ya chune hue chhatro ko WhatsApp message bhejein</p>
+      <p class="text-xs text-slate-400 mb-4">Send announcements and fee reminders via WhatsApp</p>
 
       <!-- Selection Filter -->
       <div class="space-y-2 mb-4 bg-slate-950/70 p-3 rounded-2xl border border-slate-800">
-        <p class="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">Kin Chhatro Ko Bhejna Hai?</p>
+        <p class="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">Target Audience</p>
         
         <label class="flex items-center space-x-2.5 cursor-pointer p-2 rounded-xl hover:bg-slate-900 transition">
           <input type="radio" name="bulkRecipientType" value="due" checked onchange="updateBulkMessagePreview()" class="w-4 h-4 text-amber-500 bg-slate-950 border-slate-700">
           <div>
-            <span class="text-xs font-bold text-amber-300">Kewal Fee Due (Pending wale)</span>
-            <p class="text-[10px] text-slate-400">Jinka fee status Pending hai</p>
+            <span class="text-xs font-bold text-amber-300">Only Fee Due (Pending)</span>
+            <p class="text-[10px] text-slate-400">Students whose payment is pending</p>
           </div>
         </label>
 
         <label class="flex items-center space-x-2.5 cursor-pointer p-2 rounded-xl hover:bg-slate-900 transition">
           <input type="radio" name="bulkRecipientType" value="paid" onchange="updateBulkMessagePreview()" class="w-4 h-4 text-emerald-500 bg-slate-950 border-slate-700">
           <div>
-            <span class="text-xs font-bold text-emerald-400">Kewal Fee Paid (Jama wale)</span>
-            <p class="text-[10px] text-slate-400">Dhanyawad ya general notice</p>
+            <span class="text-xs font-bold text-emerald-400">Only Fee Paid</span>
+            <p class="text-[10px] text-slate-400">Appreciation & general updates</p>
           </div>
         </label>
 
         <label class="flex items-center space-x-2.5 cursor-pointer p-2 rounded-xl hover:bg-slate-900 transition">
           <input type="radio" name="bulkRecipientType" value="both" onchange="updateBulkMessagePreview()" class="w-4 h-4 text-cyan-400 bg-slate-950 border-slate-700">
           <div>
-            <span class="text-xs font-bold text-cyan-300">Both / Sabhi Chhatra (All)</span>
-            <p class="text-[10px] text-slate-400">Sabhi 40 seats ke enrolled vidhyarthi</p>
+            <span class="text-xs font-bold text-cyan-300">All Registered Students</span>
+            <p class="text-[10px] text-slate-400">All 40 seats allocated students</p>
           </div>
         </label>
       </div>
@@ -616,7 +616,7 @@
 
       <div class="mb-4">
         <div class="flex items-center justify-between text-xs mb-2">
-          <span class="font-bold text-slate-300">Message Pane Wale Chhatra:</span>
+          <span class="font-bold text-slate-300">Recipients Selected:</span>
           <span class="font-black text-cyan-400" id="bulkRecipientsCountBadge">0 Students Selected</span>
         </div>
         <div class="max-h-40 overflow-y-auto space-y-1.5 pr-1 scrollbar-none" id="bulkRecipientsPreviewList"></div>
@@ -624,43 +624,43 @@
 
       <button onclick="startBulkDispatch()" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-extrabold text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-95">
         <i class="fab fa-whatsapp text-base"></i>
-        <span>WhatsApp Chat Kholein (Start Sending)</span>
+        <span>Start WhatsApp Dispatch</span>
       </button>
     </div>
   </div>
 
-  <!-- MODAL: Add / Edit Student (Admin only - Updated with Shift 1 & 2) -->
+  <!-- MODAL: Add / Edit Student -->
   <div id="studentEditModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
         <i class="fas fa-times"></i>
       </button>
 
-      <h3 class="text-base font-extrabold text-white mb-1" id="studentModalHeading">Vidhyarthi Jodein (Add Student)</h3>
-      <p class="text-xs text-slate-400 mb-4">Total 40 Seats - Shift 1 ya Shift 2 allott karein</p>
+      <h3 class="text-base font-extrabold text-white mb-1" id="studentModalHeading">Add New Student</h3>
+      <p class="text-xs text-slate-400 mb-4">Capacity: 40 Seats - Assign Shift 1 or Shift 2</p>
 
       <form onsubmit="saveStudentForm(event)" class="space-y-3">
         <input type="hidden" id="formStudentId" value="">
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Poora Naam (Full Name) *</label>
-          <input type="text" id="inputStudentName" required placeholder="Udaharan: Rahul Kumar" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Full Name *</label>
+          <input type="text" id="inputStudentName" required placeholder="Example: Shreyansh" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile No (10-Digit Password) *</label>
-            <input type="tel" id="inputStudentPhone" required pattern="[0-9]{10}" placeholder="9876543210" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile No (Password) *</label>
+            <input type="tel" id="inputStudentPhone" required pattern="[0-9]{10}" placeholder="9231XXXX61" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Seat / Desk No (1 se 40)</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Seat No (1 to 40)</label>
             <input type="text" id="inputStudentDesk" placeholder="Seat #05" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Shift / Plan Chunein *</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Select Shift / Plan *</label>
             <select id="inputStudentPlan" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
               <option value="Shift 1: 7AM - 2PM (₹400)">Shift 1: 7AM - 2PM (₹400)</option>
               <option value="Shift 2: 2PM - 9PM (₹400)">Shift 2: 2PM - 9PM (₹400)</option>
@@ -672,15 +672,15 @@
           <div>
             <label class="block text-xs font-semibold text-slate-300 mb-1">Fee Status</label>
             <select id="inputStudentFeeStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
-              <option value="Paid">Paid (Jama Hai)</option>
-              <option value="Pending">Pending (Baki Hai)</option>
+              <option value="Paid">Paid</option>
+              <option value="Pending">Pending</option>
             </select>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Join Date</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Admission Date</label>
             <input type="date" id="inputStudentJoinDate" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
           </div>
           <div>
@@ -692,7 +692,7 @@
         <div class="flex items-center space-x-2 pt-1 pb-1">
           <input type="checkbox" id="sendWhatsAppInviteCheckbox" checked class="w-4 h-4 rounded text-emerald-500 bg-slate-950 border-slate-700">
           <label for="sendWhatsAppInviteCheckbox" class="text-xs text-emerald-400 font-semibold cursor-pointer">
-            Save hote hi chhatra ko direct WhatsApp invite link bhejein
+            Send WhatsApp invite link immediately upon saving
           </label>
         </div>
 
@@ -713,29 +713,29 @@
 
       <h3 class="text-base font-extrabold text-white mb-1 flex items-center gap-2">
         <i class="fas fa-triangle-exclamation text-amber-400"></i>
-        <span>Desk Shikayat / Issue Ticket</span>
+        <span>Report Facility Issue</span>
       </h3>
-      <p class="text-xs text-slate-400 mb-3">Seedhe library admin ko ticket bhejein</p>
+      <p class="text-xs text-slate-400 mb-3">Submit ticket directly to the library administration</p>
 
       <form onsubmit="submitIssueTicketForm(event)" class="space-y-3">
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Samasya Ka Prakar</label>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Issue Category</label>
           <select id="issueCategoryOption" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
-            <option value="AC & Cooling Issue">AC ya Pankhe ki samasya</option>
-            <option value="Charging Socket / Light">Charging socket ya light band hai</option>
-            <option value="Wi-Fi Internet Speed">5G Wi-Fi speed samasya</option>
-            <option value="Noise Disturbance">Shor-sharaaba / Disturbance</option>
-            <option value="RO Water / Cleaning">RO paani ya safaai sambandhi</option>
+            <option value="AC & Cooling Issue">Air Conditioning & Fans</option>
+            <option value="Charging Socket / Light">Power Socket / Lighting</option>
+            <option value="Wi-Fi Internet Speed">5G Wi-Fi Speed / Connectivity</option>
+            <option value="Noise Disturbance">Noise Disturbance</option>
+            <option value="RO Water / Cleaning">RO Drinking Water / Cleaning</option>
           </select>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Vivran (Issue Details)</label>
-          <textarea id="issueDescriptionText" rows="3" required placeholder="Desk #04 par socket kaam nahi kar raha..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-cyan-400"></textarea>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Issue Description</label>
+          <textarea id="issueDescriptionText" rows="3" required placeholder="Describe the issue at your desk..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-cyan-400"></textarea>
         </div>
 
         <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition">
-          Bhejein (Submit Ticket)
+          Submit Ticket
         </button>
       </form>
     </div>
@@ -752,10 +752,10 @@
         <i class="fas fa-bullhorn text-amber-400"></i>
         <span>Broadcast Notice</span>
       </h3>
-      <p class="text-xs text-slate-400 mb-3">Send announcement to all active student portals</p>
+      <p class="text-xs text-slate-400 mb-3">Send announcement to all active student screens</p>
 
       <div class="space-y-3">
-        <textarea id="noticeTextInput" rows="3" placeholder="Udaharan: Kal Shift 1 aur 2 ke baad light maintenance rahega..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-cyan-400"></textarea>
+        <textarea id="noticeTextInput" rows="3" placeholder="Example: Shift timings update or power maintenance..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-cyan-400"></textarea>
         
         <div class="flex gap-2">
           <button onclick="saveAndPublishNotice()" class="flex-1 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition">
@@ -770,7 +770,7 @@
   </div>
 
   <script>
-    /* BABA KINARAM DIGITAL LIBRARY - HIGH SECURITY AUTHENTICATED SYSTEM (40 SEATS & 2 SHIFTS) */
+    /* BABA KINARAM DIGITAL LIBRARY - HIGH SECURITY AUTHENTICATED SYSTEM */
 
     const APP_CONFIG = {
       name: "Baba Kinaram Digital Library",
@@ -785,8 +785,8 @@
     const INITIAL_STUDENTS = [
       {
         id: "stu_1",
-        name: "Rahul Kumar",
-        phone: "9140176272",
+        name: "Shreyansh",
+        phone: "9231456761",
         desk: "Seat #04",
         plan: "Shift 1: 7AM - 2PM (₹400)",
         joinDate: "2026-09-15",
@@ -798,7 +798,7 @@
     ];
 
     const INITIAL_LOGS = [
-      { id: "log_1", name: "Rahul Kumar", action: "Check-In", time: "07:15 AM", desk: "Seat #04" }
+      { id: "log_1", name: "Shreyansh", action: "Check-In", time: "07:15 AM", desk: "Seat #04" }
     ];
 
     const INITIAL_ISSUES = [];
@@ -823,9 +823,8 @@
     let students = readStorage('students', INITIAL_STUDENTS);
     let movementLogs = readStorage('logs', INITIAL_LOGS);
     let deskIssues = readStorage('issues', INITIAL_ISSUES);
-    let noticeMessage = readStorage('notice', "Baba Kinaram Digital Library me shanti banaye rakhein. Shift 1 (7AM-2PM) aur Shift 2 (2PM-9PM) upalabdh hai.");
+    let noticeMessage = readStorage('notice', "Welcome to Baba Kinaram Digital Library. Shift 1 (7AM-2PM) & Shift 2 (2PM-9PM) are active.");
     
-    // Auth Sessions: 'none', 'student', 'admin'
     let authenticatedRole = sessionStorage.getItem('bkl_auth_role') || 'none';
     let authenticatedStudentId = sessionStorage.getItem('bkl_auth_student_id') || null;
 
@@ -833,7 +832,6 @@
     let pwaInstallPrompt = null;
     let activeFeeFilter = 'all';
 
-    // Direct student personalized link handler
     function handleIncomingUrlInvite() {
       const params = new URLSearchParams(window.location.search);
       const inviteData = params.get('join');
@@ -890,7 +888,7 @@
       setupPwaCapabilities();
     });
 
-    /* ================= AUTHENTICATION GATEWAY LOGIC ================= */
+    /* ================= AUTHENTICATION LOGIC ================= */
     function checkAuthSessionState() {
       const gateway = document.getElementById('authGatewayScreen');
       const studentSec = document.getElementById('studentPortalSection');
@@ -942,7 +940,7 @@
       const select = document.getElementById('loginStudentSelect');
       if (!select) return;
       if (students.length === 0) {
-        select.innerHTML = '<option value="">Koi student darj nahi hai</option>';
+        select.innerHTML = '<option value="">No registered student found</option>';
         return;
       }
       select.innerHTML = students.map(s => `
@@ -957,7 +955,7 @@
 
       const student = students.find(s => s.id === selectedId);
       if (!student) {
-        errBox.innerText = "Kripya apna naam chunein!";
+        errBox.innerText = "Please select your name!";
         errBox.classList.remove('hidden');
         return;
       }
@@ -969,7 +967,7 @@
         sessionStorage.setItem('bkl_auth_student_id', student.id);
         checkAuthSessionState();
       } else {
-        errBox.innerText = "Galat mobile number! Kripya apna registered 10-digit number dalein.";
+        errBox.innerText = "Incorrect number! Please enter your registered 10-digit number.";
         errBox.classList.remove('hidden');
       }
     }
@@ -990,7 +988,7 @@
     }
 
     function handleUserLogout() {
-      if (confirm("Kya aap logout karna chahte hain?")) {
+      if (confirm("Are you sure you want to log out?")) {
         authenticatedRole = 'none';
         authenticatedStudentId = null;
         sessionStorage.clear();
@@ -1044,14 +1042,14 @@
 
       if (isInside) {
         btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base transition-all duration-200 transform active:scale-95 shadow-xl flex items-center justify-center gap-2.5 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white shadow-rose-500/25";
-        btn.innerHTML = '<i class="fas fa-right-from-bracket text-lg"></i><span>Check-Out / Prasthan Darj Karein</span>';
+        btn.innerHTML = '<i class="fas fa-right-from-bracket text-lg"></i><span>Check-Out (Exit Study Hall)</span>';
         title.innerText = "Currently Active Study Session";
-        subtitle.innerText = "Library presence recorded • Focus on your target";
+        subtitle.innerText = "Presence recorded • Focus on your target";
       } else {
         btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base transition-all duration-200 transform active:scale-95 shadow-xl flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-emerald-500/25";
-        btn.innerHTML = '<i class="fas fa-right-to-bracket text-lg"></i><span>Check-In / Upasthiti Darj Karein</span>';
+        btn.innerHTML = '<i class="fas fa-right-to-bracket text-lg"></i><span>Check-In Now</span>';
         title.innerText = "Current Study Duration";
-        subtitle.innerText = "Hall me pravesh karte hi Check-In dabayein";
+        subtitle.innerText = "Press Check-In upon entering the study hall";
         document.getElementById('liveStudyTimer').innerText = "00:00:00";
       }
     }
@@ -1171,7 +1169,7 @@
       const presentList = students.filter(s => s.status === 'In Library');
 
       if (presentList.length === 0) {
-        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">Vartaman me koi chhatra upsthit nahi hai (40 Seats Khali).</div>`;
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">No student currently inside (All 40 seats vacant).</div>`;
         return;
       }
 
@@ -1221,7 +1219,7 @@
       });
 
       if (filteredList.length === 0) {
-        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">Koi chhatra record nahi mila (Filter: ${activeFeeFilter.toUpperCase()}).</div>`;
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">No student records found (Filter: ${activeFeeFilter.toUpperCase()}).</div>`;
         return;
       }
 
@@ -1275,7 +1273,7 @@
       renderAdminStudentDirectory(q);
     }
 
-    /* ================= BULK FEE DISPATCH LOGIC ================= */
+    /* ================= BULK DISPATCH LOGIC ================= */
     function openBulkFeeMessageModal() {
       document.getElementById('bulkMessageModal').classList.remove('hidden');
       updateBulkMessagePreview();
@@ -1313,15 +1311,15 @@
       countBadge.innerText = `${list.length} Students Selected`;
 
       if (type === 'due') {
-        customTextArea.value = "Yeh Baba Kinaram Digital Library se aapki shift fee renewal ka reminder hai (Timing: 7:00 AM - 9:00 PM). Kripya adhyayan me baadha se bachne ke liye renewal karwayein. PhonePe/GPay: 9140176272";
+        customTextArea.value = "This is a polite reminder from Baba Kinaram Digital Library regarding your study shift fee renewal. Kindly renew to avoid seat reallocation. PhonePe/GPay: 9140176272";
       } else if (type === 'paid') {
-        customTextArea.value = "Aapki library fee jama hai. Baba Kinaram Digital Library me shanti aur anushasan banaye rakhne ke liye dhanyawad. Man lagakar padhai karein!";
+        customTextArea.value = "Your monthly library fee is fully updated. Thank you for maintaining discipline and silence in the halls. Happy studying!";
       } else {
-        customTextArea.value = "Baba Kinaram Digital Library (Behind Hanuman Mandir, Ramgarh) ki aavashyak soochana. Library timing subah 7:00 AM se raat 9:00 PM tak hai. Apni shift ka dhyan rakhein.";
+        customTextArea.value = "Notice from Baba Kinaram Digital Library (Behind Hanuman Mandir, Ramgarh). Library timings are 7:00 AM – 9:00 PM daily. Please adhere strictly to your assigned shift.";
       }
 
       if (list.length === 0) {
-        listContainer.innerHTML = `<div class="p-2 text-center text-[11px] text-slate-500">Is shreni me koi chhatra nahi hai.</div>`;
+        listContainer.innerHTML = `<div class="p-2 text-center text-[11px] text-slate-500">No students found in this category.</div>`;
         return;
       }
 
@@ -1344,11 +1342,11 @@
       const baseNote = document.getElementById('bulkMessageCustomText').value.trim();
 
       if (list.length === 0) {
-        alert("Bhejne ke liye koi chhatra upalabdh nahi hai!");
+        alert("No recipients available to send messages.");
         return;
       }
 
-      const confirmSend = confirm(`Kul ${list.length} chhatro ko WhatsApp sandesh bheja jayega. Kya aap shuru karna chahte hain?`);
+      const confirmSend = confirm(`You are about to message ${list.length} students on WhatsApp. Proceed?`);
       if (!confirmSend) return;
 
       closeBulkFeeMessageModal();
@@ -1357,20 +1355,20 @@
 
       function sendNext() {
         if (currentIndex >= list.length) {
-          alert("Sabhi chhatro ko message bhejne ki prakriya poori ho gayi!");
+          alert("All messages processed successfully!");
           return;
         }
 
         const s = list[currentIndex];
-        const statusText = s.feeStatus === 'Paid' ? 'Paid (Jama Hai)' : 'Due / Pending (Baki Hai)';
-        const fullMsg = `Namaste *${s.name}* ji! 📚%0A%0A*Baba Kinaram Digital Library*%0A📍 Behind Hanuman Mandir, Ramgarh%0A⏰ Open: 7:00 AM – 9:00 PM (Daily)%0A━━━━━━━━━━━━━━━━━━━━%0A📌 *Plan/Shift:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* ${encodeURIComponent(statusText)}%0A━━━━━━━━━━━━━━━━━━━━%0A${encodeURIComponent(baseNote)}%0A%0ADhanyawad! 🙏`;
+        const statusText = s.feeStatus === 'Paid' ? 'Paid' : 'Due / Pending';
+        const fullMsg = `Hello *${s.name}*! 📚%0A%0A*Baba Kinaram Digital Library*%0A📍 Behind Hanuman Mandir, Ramgarh%0A⏰ Open: 7:00 AM – 9:00 PM Daily%0A━━━━━━━━━━━━━━━━━━━━%0A📌 *Plan/Shift:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* ${encodeURIComponent(statusText)}%0A━━━━━━━━━━━━━━━━━━━━%0A${encodeURIComponent(baseNote)}%0A%0AThank you! 🙏`;
 
         window.open(`https://wa.me/91${s.phone}?text=${fullMsg}`, '_blank');
         currentIndex++;
 
         if (currentIndex < list.length) {
           setTimeout(() => {
-            if (confirm(`[${currentIndex}/${list.length}] Bheja gaya. Agle chhatra (${list[currentIndex].name}) ka WhatsApp kholein?`)) {
+            if (confirm(`[${currentIndex}/${list.length}] Sent. Open WhatsApp for the next student (${list[currentIndex].name})?`)) {
               sendNext();
             }
           }, 800);
@@ -1401,7 +1399,7 @@
       if (!s) return;
 
       const directLink = generateStudentPersonalLink(s);
-      const textMsg = `Namaste *${s.name}* ji! 📚%0A%0A*Baba Kinaram Digital Library* (Behind Hanuman Mandir, Ramgarh) me aapka swagat hai.%0A⏰ *Library Timings:* 7:00 AM – 9:00 PM%0A%0A📌 *Seat No:* ${encodeURIComponent(s.desk || 'General')}%0A📌 *Allocated Shift:* ${encodeURIComponent(s.plan)}%0A%0A📲 *Apna personal attendance aur library app kholne ke liye is link par click karein:*%0A${encodeURIComponent(directLink)}%0A%0A(Link kholkar top 3 dots dabakar *Add to Home screen* kar lein taaki app icon mobile me aa jaye).%0ADhanyawad! 🙏`;
+      const textMsg = `Hello *${s.name}*! 📚%0A%0AWelcome to *Baba Kinaram Digital Library* (Behind Hanuman Mandir, Ramgarh).%0A⏰ *Hours:* 7:00 AM – 9:00 PM%0A%0A📌 *Allocated Seat:* ${encodeURIComponent(s.desk || 'General')}%0A📌 *Assigned Shift:* ${encodeURIComponent(s.plan)}%0A%0A📲 *Access your personal attendance dashboard here:*%0A${encodeURIComponent(directLink)}%0A%0A(Open the link and select 'Add to Home screen' from your browser menu to install).%0AThank you! 🙏`;
 
       window.open(`https://wa.me/91${s.phone}?text=${textMsg}`, '_blank');
     }
@@ -1436,7 +1434,7 @@
     }
 
     function removeStudent(id) {
-      if (confirm("Kya aap sach me is student ka record hatana chahte hain?")) {
+      if (confirm("Are you sure you want to delete this student record?")) {
         students = students.filter(s => s.id !== id);
         writeStorage('students', students);
         populateStudentDropdown();
@@ -1448,13 +1446,13 @@
       const s = students.find(item => item.id === id);
       if (!s) return;
 
-      const message = `Namaste ${s.name} ji,%0A%0AYeh *Baba Kinaram Digital Library (Behind Hanuman Mandir, Ramgarh)* se aapki library fees ka reminder hai.%0A⏰ *Timings:* 7:00 AM – 9:00 PM%0A%0A📌 *Plan/Shift:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* Due / Pending%0A%0AKripya apni seat ka renewal karwayein taaki adhyayan me rukawat na aaye.%0AOnline payment PhonePe/GPay: *${APP_CONFIG.phone}*%0ADhanyawad!`;
+      const message = `Hello ${s.name},%0A%0AThis is an official fee reminder from *Baba Kinaram Digital Library (Behind Hanuman Mandir, Ramgarh)*.%0A⏰ *Hours:* 7:00 AM – 9:00 PM%0A%0A📌 *Shift/Plan:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* Due / Pending%0A%0APlease renew your seat to ensure uninterrupted study access.%0AOnline payment UPI: *${APP_CONFIG.phone}*%0AThank you!`;
       window.open(`https://wa.me/91${s.phone}?text=${message}`, '_blank');
     }
 
     function openStudentModal() {
       document.getElementById('formStudentId').value = '';
-      document.getElementById('studentModalHeading').innerText = 'Vidhyarthi Jodein (Add Student)';
+      document.getElementById('studentModalHeading').innerText = 'Add New Student';
       document.getElementById('inputStudentName').value = '';
       document.getElementById('inputStudentPhone').value = '';
       document.getElementById('inputStudentDesk').value = `Seat #${Math.floor(Math.random() * 40) + 1}`;
@@ -1467,7 +1465,7 @@
       if (!s) return;
 
       document.getElementById('formStudentId').value = s.id;
-      document.getElementById('studentModalHeading').innerText = 'Vidhyarthi Vivran Badlein (Edit Student)';
+      document.getElementById('studentModalHeading').innerText = 'Edit Student Details';
       document.getElementById('inputStudentName').value = s.name;
       document.getElementById('inputStudentPhone').value = s.phone;
       document.getElementById('inputStudentDesk').value = s.desk || '';
@@ -1562,7 +1560,7 @@
       closeReportIssueModal();
       document.getElementById('issueDescriptionText').value = '';
 
-      alert("Aapki shikayat admin tak pahunch gayi hai!");
+      alert("Ticket submitted successfully to the administrator.");
       if (authenticatedRole === 'admin') renderAdminTickets();
     }
 
@@ -1571,7 +1569,7 @@
       document.getElementById('adminTicketCountBadge').innerText = `${deskIssues.length} Tickets`;
 
       if (deskIssues.length === 0) {
-        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">Koi shikayat darj nahi hai.</div>`;
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">No active support tickets.</div>`;
         return;
       }
 
@@ -1610,7 +1608,7 @@
     }
 
     function deleteIssueTicket(id) {
-      if (confirm("Kya aap is ticket ko hatana chahte hain?")) {
+      if (confirm("Delete this maintenance ticket?")) {
         deskIssues = deskIssues.filter(item => item.id !== id);
         writeStorage('issues', deskIssues);
         renderAdminTickets();
@@ -1620,7 +1618,7 @@
     function renderMovementHistoryLogs() {
       const container = document.getElementById('adminMovementLogsContainer');
       if (movementLogs.length === 0) {
-        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500">Koi log upalabdh nahi hai.</div>`;
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500">No movement logs available.</div>`;
         return;
       }
 
@@ -1640,7 +1638,7 @@
     }
 
     function clearAllLogs() {
-      if (confirm("Kya aap saara upasthiti itihas hatana chahte hain?")) {
+      if (confirm("Are you sure you want to clear complete attendance history?")) {
         movementLogs = [];
         writeStorage('logs', movementLogs);
         renderMovementHistoryLogs();
@@ -1686,12 +1684,12 @@
 
     function handleStudentRenewFee() {
       const stu = getCurrentStudent();
-      const msg = `Namaste sir,%0A%0AMai *${stu.name}* (Baba Kinaram Digital Library, Ramgarh).%0AMujhe apni library shift fee jama karni hai.%0A%0A📌 *Plan/Shift:* ${encodeURIComponent(stu.plan)}%0A📍 *Seat:* ${encodeURIComponent(stu.desk || 'General Seat')}%0A%0AKripya UPI QR code bhejein.`;
+      const msg = `Hello Sir,%0A%0AI am *${stu.name}* from Baba Kinaram Digital Library.%0AI would like to submit my fee renewal.%0A%0A📌 *Plan/Shift:* ${encodeURIComponent(stu.plan)}%0A📍 *Seat:* ${encodeURIComponent(stu.desk || 'General Seat')}%0A%0AKindly share the UPI QR code.`;
       window.open(`https://wa.me/91${APP_CONFIG.phone}?text=${msg}`, '_blank');
     }
 
     function openWhatsAppChatDirect() {
-      window.open(`https://wa.me/91${APP_CONFIG.phone}?text=Namaste%20Sir,%20Baba%20Kinaram%20Library%20Seat%20ki%20jankari%20chahiye`, '_blank');
+      window.open(`https://wa.me/91${APP_CONFIG.phone}?text=Hello%20Sir,%20I%20need%20information%20regarding%20seat%20booking%20at%20Baba%20Kinaram%20Digital%20Library`, '_blank');
     }
 
     function callLibraryDirect() {
@@ -1712,7 +1710,7 @@
       const blobStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dump, null, 2));
       const anchor = document.createElement('a');
       anchor.setAttribute("href", blobStr);
-      anchor.setAttribute("download", `BKL_App_Backup_${new Date().toISOString().split('T')[0]}.json`);
+      anchor.setAttribute("download", `Digital_Library_Backup_${new Date().toISOString().split('T')[0]}.json`);
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -1720,16 +1718,16 @@
 
     function setupPwaCapabilities() {
       const dynamicManifest = {
-        name: "Baba Kinaram Digital Library",
-        short_name: "BKL Library",
-        description: "Library attendance and management app for Baba Kinaram Digital Library Ramgarh (40 Seats - 7AM to 9PM)",
+        name: "Digital Library",
+        short_name: "Digital Library",
+        description: "Official seat booking and attendance management application for Baba Kinaram Digital Library Ramgarh",
         start_url: window.location.href,
         display: "standalone",
         background_color: "#091e3a",
         theme_color: "#091e3a",
         icons: [
-          { src: "https://placehold.co/192x192/091e3a/38bdf8.png?text=BKL", sizes: "192x192", type: "image/png" },
-          { src: "https://placehold.co/512x512/091e3a/38bdf8.png?text=BKL", sizes: "512x512", type: "image/png" }
+          { src: "logo.png", sizes: "192x192", type: "image/png" },
+          { src: "logo.png", sizes: "512x512", type: "image/png" }
         ]
       };
       const blob = new Blob([JSON.stringify(dynamicManifest)], { type: 'application/json' });
@@ -1757,7 +1755,7 @@
           pwaInstallPrompt = null;
         });
       } else {
-        alert("App ko home screen par jodne ke liye browser ke 3 dots (⋮) par click karein aur 'Install app' ya 'Add to Home Screen' chunein.");
+        alert("To install this app on your phone, tap the browser menu (⋮) and select 'Install app' or 'Add to Home Screen'.");
       }
     }
   </script>
