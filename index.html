@@ -60,7 +60,7 @@
         text-shadow: 0 0 10px rgba(56, 189, 248, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
       }
       50% {
-        transform: translateY(-5px) rotate(1.5deg);
+        transform: translateY(-3px) rotate(1.5deg);
         text-shadow: 0 0 18px rgba(56, 189, 248, 0.8), 0 0 30px rgba(16, 185, 129, 0.5);
       }
       100% {
@@ -76,6 +76,45 @@
 </head>
 
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
+
+  <!-- ================= POPUP NOTICE (APP KHULTE HI AANE WALA) ================= -->
+  <div id="startupNoticeModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+    <div class="bg-gradient-to-b from-brand-900 via-slate-900 to-slate-950 border border-cyan-500/40 rounded-3xl max-w-sm w-full p-6 shadow-2xl relative text-center">
+      
+      <!-- Top Badge / Icon -->
+      <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 text-2xl shadow-lg shadow-cyan-500/20">
+        <i class="fas fa-sparkles"></i>
+      </div>
+
+      <div class="inline-block bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full mb-2">
+        100% FREE APPLICATION
+      </div>
+
+      <h3 class="text-lg font-black text-white mb-2">Baba Kinaram Digital Library</h3>
+      
+      <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 text-xs text-slate-300 space-y-2 text-left mb-4">
+        <p class="leading-relaxed">
+          ✨ यह ऐप आपके लिए <strong class="text-emerald-400">100% मुफ़्त</strong> है।
+        </p>
+        <p class="leading-relaxed">
+          ⚡ इस ऐप को <strong class="text-cyan-400 font-bold">ASHIR X PRO</strong> द्वारा खास आपकी सुविधा और पढ़ाई के लिए तैयार किया गया है।
+        </p>
+        <p class="leading-relaxed">
+          ⏱️️ यह सिस्टम आपकी <strong class="text-white">लाइब्रेरी उपस्थिति (Attendance)</strong>, <strong class="text-white">स्टडी टाइमर</strong> और आपने आज कितने घंटे पढ़ाई की—यह सब लाइव मैनेज करेगा।
+        </p>
+      </div>
+
+      <button onclick="closeStartupNotice()" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-sky-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 text-slate-950 font-black text-sm rounded-xl transition transform active:scale-95 shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2">
+        <span>समझ गया / Let's Study</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+
+      <p class="text-[10px] text-slate-400 mt-3 font-curly text-base">
+        Crafted with dedication by ASHIR X PRO
+      </p>
+    </div>
+  </div>
+
   <!-- Top App Bar -->
   <header class="bg-brand-900/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40 px-4 py-2.5 shadow-xl">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
@@ -142,8 +181,8 @@
     </div>
   </div>
 
-  <!-- Main Application Body -->
-  <main class="flex-1 max-w-2xl w-full mx-auto p-4 pb-32 space-y-4">
+  <!-- Main Application Body (pb-36 di hai taaki fixed watermark content ko na chhupaye) -->
+  <main class="flex-1 max-w-2xl w-full mx-auto p-4 pb-36 space-y-4">
     
     <!-- 1. STUDENT VIEW -->
     <section id="studentPortalSection" class="space-y-4">
@@ -446,20 +485,18 @@
 
     </section>
 
-    <!-- FLOATING MOTION WATERMARK (CURLED FONT + GLOW) -->
-    <div class="pt-6 pb-4 flex flex-col items-center justify-center text-center pointer-events-none">
-      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-cyan-500/30 backdrop-blur-md shadow-lg shadow-cyan-500/10">
-        <span class="text-yellow-400 text-sm animate-bounce">⚡</span>
-        <span class="font-curly text-xl sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 watermark-motion">
-          Powered by ASHIR X PRO
-        </span>
-      </div>
-      <p class="text-[9px] text-slate-500 mt-1 uppercase tracking-widest font-mono">
-        All Rights Reserved • BKL System
-      </p>
-    </div>
-
   </main>
+
+  <!-- ================= PERMANENT FIXED FLOATING WATERMARK (ALWAYS VISIBLE) ================= -->
+  <!-- Yeh hamesha screen par floating rahega, chahe student kitna bhi scroll kare -->
+  <div class="fixed bottom-14 left-0 right-0 z-30 pointer-events-none flex justify-center px-4">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-950/85 border border-cyan-500/40 backdrop-blur-md shadow-2xl shadow-cyan-500/20">
+      <span class="text-yellow-400 text-xs animate-bounce">⚡</span>
+      <span class="font-curly text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 watermark-motion">
+        Powered by ASHIR X PRO
+      </span>
+    </div>
+  </div>
 
   <!-- MODAL: Role Switcher / Admin PIN Entry -->
   <div id="roleModalOverlay" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -576,7 +613,6 @@
           </div>
         </div>
 
-        <!-- Checkbox to send WhatsApp Invite -->
         <div class="flex items-center space-x-2 pt-1 pb-1">
           <input type="checkbox" id="sendWhatsAppInviteCheckbox" checked class="w-4 h-4 rounded text-emerald-500 bg-slate-950 border-slate-700">
           <label for="sendWhatsAppInviteCheckbox" class="text-xs text-emerald-400 font-semibold cursor-pointer">
@@ -740,6 +776,15 @@
     let currentRole = 'student';
     let studyTimerInterval = null;
     let pwaInstallPrompt = null;
+
+    // STARTUP NOTICE POPUP FUNCTION
+    function closeStartupNotice() {
+      const modal = document.getElementById('startupNoticeModal');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
 
     // URL PARAMETER PARSER (Direct Student Auto-Login from WhatsApp Link)
     function handleIncomingUrlInvite() {
