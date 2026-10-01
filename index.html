@@ -12,10 +12,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts: Inter -->
+  <!-- Google Fonts: Inter & Dancing Script (Curly Font) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <script>
     tailwind.config = {
@@ -23,6 +23,7 @@
         extend: {
           fontFamily: {
             sans: ['Inter', 'system-ui', 'sans-serif'],
+            curly: ['"Dancing Script"', 'cursive'],
           },
           colors: {
             brand: {
@@ -44,26 +45,32 @@
   </script>
 
   <style>
-    * {
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
+    * { -webkit-tap-highlight-color: transparent; user-select: none; }
+    input, textarea, select { user-select: text; }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    @keyframes pulseGlow { 0%, 100% { opacity: 0.9; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.08); } }
+    .pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
+
+    /* WATERMARK ANIMATION */
+    @keyframes watermarkFloat {
+      0% {
+        transform: translateY(0px) rotate(-1deg);
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
+      }
+      50% {
+        transform: translateY(-5px) rotate(1.5deg);
+        text-shadow: 0 0 18px rgba(56, 189, 248, 0.8), 0 0 30px rgba(16, 185, 129, 0.5);
+      }
+      100% {
+        transform: translateY(0px) rotate(-1deg);
+        text-shadow: 0 0 10px rgba(56, 189, 248, 0.4), 0 0 20px rgba(16, 185, 129, 0.2);
+      }
     }
-    input, textarea, select {
-      user-select: text;
-    }
-    .scrollbar-none::-webkit-scrollbar {
-      display: none;
-    }
-    .scrollbar-none {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    @keyframes pulseGlow {
-      0%, 100% { opacity: 0.9; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(1.08); }
-    }
-    .pulse-glow {
-      animation: pulseGlow 2.5s infinite ease-in-out;
+    .watermark-motion {
+      animation: watermarkFloat 3.5s ease-in-out infinite;
+      letter-spacing: 1px;
     }
   </style>
 </head>
@@ -89,13 +96,11 @@
 
       <!-- Header Action Controls -->
       <div class="flex items-center space-x-1.5">
-        <!-- PWA Install Trigger -->
         <button id="pwaInstallBannerBtn" onclick="triggerPwaInstall()" class="hidden text-[11px] bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-2.5 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
           <i class="fas fa-arrow-down-to-bracket text-xs"></i>
           <span>Install</span>
         </button>
 
-        <!-- Role Badge Switcher -->
         <button onclick="toggleRoleModal()" id="roleSwitcherTrigger" class="text-xs bg-slate-850 hover:bg-slate-800 border border-slate-700/80 px-2.5 py-1.5 rounded-lg text-slate-200 font-semibold flex items-center gap-1.5 transition">
           <i class="fas fa-user-graduate text-cyan-400" id="currentRoleIcon"></i>
           <span id="currentRoleText">Student</span>
@@ -104,6 +109,19 @@
       </div>
     </div>
   </header>
+
+  <!-- Welcome / New User Alert Banner -->
+  <div id="welcomeInviteBanner" class="hidden bg-gradient-to-r from-emerald-600/30 via-emerald-500/20 to-emerald-600/30 border-b border-emerald-500/40 px-4 py-2">
+    <div class="max-w-2xl mx-auto flex items-center justify-between text-xs text-emerald-200">
+      <div class="flex items-center space-x-2">
+        <i class="fas fa-check-circle text-emerald-400 text-sm"></i>
+        <p class="font-bold">आपकी सीट सफलतापूर्वक सेट हो गई है! अब आप अटेंडेंस शुरू कर सकते हैं।</p>
+      </div>
+      <button onclick="document.getElementById('welcomeInviteBanner').classList.add('hidden')" class="text-emerald-300 hover:text-white ml-2">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
 
   <!-- Realtime Notice Broadcast Bar -->
   <div id="noticeBanner" class="hidden bg-gradient-to-r from-amber-500/15 via-amber-600/25 to-amber-500/15 border-b border-amber-500/30 px-4 py-2">
@@ -125,7 +143,7 @@
   </div>
 
   <!-- Main Application Body -->
-  <main class="flex-1 max-w-2xl w-full mx-auto p-4 pb-24 space-y-4">
+  <main class="flex-1 max-w-2xl w-full mx-auto p-4 pb-32 space-y-4">
     
     <!-- 1. STUDENT VIEW -->
     <section id="studentPortalSection" class="space-y-4">
@@ -187,7 +205,6 @@
           </span>
         </div>
 
-        <!-- Timer Display Area -->
         <div class="py-4">
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest" id="liveTimerStatusTitle">
             Current Study Duration
@@ -200,7 +217,6 @@
           </p>
         </div>
 
-        <!-- Check In / Check Out Action Button -->
         <button id="mainAttendanceBtn" onclick="toggleStudentAttendance()" class="w-full py-4 px-6 rounded-xl font-extrabold text-base transition-all duration-200 transform active:scale-95 shadow-xl flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-emerald-500/20">
           <i class="fas fa-right-to-bracket text-lg"></i>
           <span>Check-In / उपस्थिति दर्ज करें</span>
@@ -214,7 +230,6 @@
 
       <!-- Quick Action Utilities -->
       <div class="grid grid-cols-2 gap-3">
-        <!-- Fee Renewal via WhatsApp -->
         <button onclick="handleStudentRenewFee()" class="bg-slate-900 hover:bg-slate-850 p-3.5 rounded-2xl border border-slate-800 text-left transition flex items-start space-x-3 group">
           <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition">
             <i class="fab fa-whatsapp"></i>
@@ -225,7 +240,6 @@
           </div>
         </button>
 
-        <!-- Desk Issue Reporter -->
         <button onclick="openReportIssueModal()" class="bg-slate-900 hover:bg-slate-850 p-3.5 rounded-2xl border border-slate-800 text-left transition flex items-start space-x-3 group">
           <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition">
             <i class="fas fa-triangle-exclamation"></i>
@@ -237,7 +251,7 @@
         </button>
       </div>
 
-      <!-- Library Shift Rates Card -->
+      <!-- Fees Card -->
       <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -358,7 +372,7 @@
             <span>Add Student</span>
           </button>
 
-          <button onclick="openNoticeBroadcastModal()" class="bg-slate-800 hover:bg-slate-755 text-amber-300 font-semibold text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition active:scale-95">
+          <button onclick="openNoticeBroadcastModal()" class="bg-slate-800 hover:bg-slate-750 text-amber-300 font-semibold text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition active:scale-95">
             <i class="fas fa-bullhorn text-xs"></i>
             <span>Broadcast Notice</span>
           </button>
@@ -381,20 +395,18 @@
           <span class="text-[11px] font-bold text-emerald-400" id="adminPresentBadge">0 Active</span>
         </div>
 
-        <div class="space-y-2" id="currentlyPresentRoster">
-          <!-- Rendered dynamically -->
-        </div>
+        <div class="space-y-2" id="currentlyPresentRoster"></div>
       </div>
 
-      <!-- Student Directory with Search and WhatsApp Fee Reminder -->
+      <!-- Student Directory with Search, WhatsApp Invite & Fee Reminder -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
           <div>
             <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
               <i class="fas fa-address-book text-cyan-400"></i>
-              <span>Student Directory & Fee Tracker</span>
+              <span>Student Directory & Direct Invite</span>
             </h3>
-            <p class="text-[11px] text-slate-400">Instant WhatsApp reminder on due fees</p>
+            <p class="text-[11px] text-slate-400">Click WhatsApp button to send direct app link</p>
           </div>
 
           <div class="relative">
@@ -403,9 +415,7 @@
           </div>
         </div>
 
-        <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-none" id="adminStudentRosterContainer">
-          <!-- Rendered dynamically -->
-        </div>
+        <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-none" id="adminStudentRosterContainer"></div>
       </div>
 
       <!-- Desk Incident Issues List -->
@@ -418,9 +428,7 @@
           <span class="text-[11px] text-slate-400" id="adminTicketCountBadge">0 Tickets</span>
         </div>
 
-        <div class="space-y-2" id="adminIssuesListContainer">
-          <!-- Rendered dynamically -->
-        </div>
+        <div class="space-y-2" id="adminIssuesListContainer"></div>
       </div>
 
       <!-- Full Attendance History Log -->
@@ -433,12 +441,24 @@
           <button onclick="clearAllLogs()" class="text-[11px] text-rose-400 hover:underline">Clear History</button>
         </div>
 
-        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-none" id="adminMovementLogsContainer">
-          <!-- Rendered dynamically -->
-        </div>
+        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-none" id="adminMovementLogsContainer"></div>
       </div>
 
     </section>
+
+    <!-- FLOATING MOTION WATERMARK (CURLED FONT + GLOW) -->
+    <div class="pt-6 pb-4 flex flex-col items-center justify-center text-center pointer-events-none">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-cyan-500/30 backdrop-blur-md shadow-lg shadow-cyan-500/10">
+        <span class="text-yellow-400 text-sm animate-bounce">⚡</span>
+        <span class="font-curly text-xl sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-cyan-300 to-emerald-400 watermark-motion">
+          Powered by ASHIR X PRO
+        </span>
+      </div>
+      <p class="text-[9px] text-slate-500 mt-1 uppercase tracking-widest font-mono">
+        All Rights Reserved • BKL System
+      </p>
+    </div>
+
   </main>
 
   <!-- MODAL: Role Switcher / Admin PIN Entry -->
@@ -468,7 +488,6 @@
       <div id="pinEntryWrapper" class="hidden pt-3 border-t border-slate-800">
         <label class="block text-xs font-semibold text-slate-300 mb-1.5">Enter Admin Password:</label>
         <div class="flex gap-2">
-          <!-- maxlength बढ़कर 15 कर दिया गया है ताकि A$HIRV@D आराम से आ जाए -->
           <input type="password" id="adminSecretPinInput" maxlength="15" placeholder="Password डालें..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-center tracking-widest text-white outline-none focus:border-cyan-400">
           <button onclick="submitAdminPinCheck()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition">
             Unlock
@@ -479,7 +498,7 @@
     </div>
   </div>
 
-  <!-- MODAL: Switch / Register Active Student -->
+  <!-- MODAL: Switch Student Profile -->
   <div id="studentSwitcherModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative max-h-[85vh] flex flex-col">
       <button onclick="closeSelectStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -489,18 +508,16 @@
       <h3 class="text-base font-extrabold text-white mb-1">Select Student Profile</h3>
       <p class="text-xs text-slate-400 mb-3">अपना नाम चुनें या नया रजिस्ट्रेशन जोड़ें</p>
 
-      <div class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1 scrollbar-none" id="studentRosterSelectList">
-        <!-- Dynamically rendered -->
-      </div>
+      <div class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1 scrollbar-none" id="studentRosterSelectList"></div>
 
-      <button onclick="handleSelfRegisterClick()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-755 border border-slate-700 text-cyan-300 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition">
+      <button onclick="handleSelfRegisterClick()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-750 border border-slate-700 text-cyan-300 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition">
         <i class="fas fa-plus-circle"></i>
         <span>Register New Student / नया पंजीकरण</span>
       </button>
     </div>
   </div>
 
-  <!-- MODAL: Add / Edit Student (Owner & Self-Service) -->
+  <!-- MODAL: Add / Edit Student (With Auto WhatsApp Invite Option) -->
   <div id="studentEditModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -508,7 +525,7 @@
       </button>
 
       <h3 class="text-base font-extrabold text-white mb-1" id="studentModalHeading">विद्यार्थी जोड़ें (Add Student)</h3>
-      <p class="text-xs text-slate-400 mb-4">Baba Kinaram Digital Library Record</p>
+      <p class="text-xs text-slate-400 mb-4">डिटेल भरते ही छात्र को डायरेक्ट WhatsApp इनवाइट जाएगा</p>
 
       <form onsubmit="saveStudentForm(event)" class="space-y-3">
         <input type="hidden" id="formStudentId" value="">
@@ -520,7 +537,7 @@
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">मोबाइल नंबर (10 Digit) *</label>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">मोबाइल नंबर (10 Digit WhatsApp) *</label>
             <input type="tel" id="inputStudentPhone" required pattern="[0-9]{10}" placeholder="9876543210" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
           </div>
           <div>
@@ -559,8 +576,17 @@
           </div>
         </div>
 
-        <button type="submit" class="w-full py-2.5 mt-2 bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs rounded-xl transition">
-          सुरक्षित करें (Save Record)
+        <!-- Checkbox to send WhatsApp Invite -->
+        <div class="flex items-center space-x-2 pt-1 pb-1">
+          <input type="checkbox" id="sendWhatsAppInviteCheckbox" checked class="w-4 h-4 rounded text-emerald-500 bg-slate-950 border-slate-700">
+          <label for="sendWhatsAppInviteCheckbox" class="text-xs text-emerald-400 font-semibold cursor-pointer">
+            सेव होते ही छात्र को WhatsApp पर डायरेक्ट लिंक भेजें
+          </label>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 mt-2 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 text-slate-950 font-extrabold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-md">
+          <i class="fab fa-whatsapp text-sm"></i>
+          <span>Save & Send Direct Invite</span>
         </button>
       </form>
     </div>
@@ -603,7 +629,7 @@
     </div>
   </div>
 
-  <!-- MODAL: Broadcast Notice (Owner Admin) -->
+  <!-- MODAL: Broadcast Notice -->
   <div id="noticeModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
       <button onclick="closeNoticeBroadcastModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -631,7 +657,7 @@
     </div>
   </div>
 
-  <!-- Bottom Quick Switcher Navigation -->
+  <!-- Bottom Navigation -->
   <footer class="fixed bottom-0 left-0 right-0 bg-brand-900/95 backdrop-blur-md border-t border-slate-800 py-2 px-4 z-40">
     <div class="max-w-2xl mx-auto flex items-center justify-around">
       <button onclick="setAppRole('student')" id="bottomNavStudent" class="flex flex-col items-center gap-0.5 text-cyan-400 transition">
@@ -657,18 +683,17 @@
   </footer>
 
   <script>
-    /* BABA KINARAM DIGITAL LIBRARY - PWA APPLICATION CONTROLLER */
+    /* BABA KINARAM DIGITAL LIBRARY - POWERED BY ASHIR X PRO */
 
     const APP_CONFIG = {
       name: "Baba Kinaram Digital Library",
       address: "Behind Hanuman Mandir, Ramgarh",
       phone: "9140176272",
       email: "ashirvadyadavv@gmail.com",
-      adminPin: "A$HIRV@D", // <- नया पासवर्ड यहाँ सेट हो गया है
+      adminPin: "A$HIRV@D",
       totalSeats: 30
     };
 
-    // Initial Demo Seed Records
     const INITIAL_STUDENTS = [
       {
         id: "stu_1",
@@ -681,56 +706,15 @@
         feeStatus: "Paid",
         status: "In Library",
         checkedInSince: Date.now() - (2 * 3600 * 1000 + 15 * 60 * 1000)
-      },
-      {
-        id: "stu_2",
-        name: "Amit Singh",
-        phone: "9876543210",
-        desk: "Desk #09",
-        plan: "7 Hours (₹400)",
-        joinDate: "2026-09-20",
-        validityDays: 30,
-        feeStatus: "Paid",
-        status: "In Library",
-        checkedInSince: Date.now() - (1 * 3600 * 1000 + 40 * 60 * 1000)
-      },
-      {
-        id: "stu_3",
-        name: "Pooja Yadav",
-        phone: "9988776655",
-        desk: "Desk #12",
-        plan: "Full Day (₹600)",
-        joinDate: "2026-09-01",
-        validityDays: 30,
-        feeStatus: "Pending",
-        status: "Out",
-        checkedInSince: null
-      },
-      {
-        id: "stu_4",
-        name: "Vikas Patel",
-        phone: "9123456780",
-        desk: "Desk #16",
-        plan: "15 Days (₹300)",
-        joinDate: "2026-09-25",
-        validityDays: 15,
-        feeStatus: "Paid",
-        status: "In Library",
-        checkedInSince: Date.now() - (45 * 60 * 1000)
       }
     ];
 
     const INITIAL_LOGS = [
-      { id: "log_1", name: "Rahul Kumar", action: "Check-In", time: "08:15 AM", desk: "Desk #04" },
-      { id: "log_2", name: "Amit Singh", action: "Check-In", time: "08:50 AM", desk: "Desk #09" },
-      { id: "log_3", name: "Pooja Yadav", action: "Check-Out (4.2 hrs)", time: "01:20 PM", desk: "Desk #12" }
+      { id: "log_1", name: "Rahul Kumar", action: "Check-In", time: "08:15 AM", desk: "Desk #04" }
     ];
 
-    const INITIAL_ISSUES = [
-      { id: "iss_1", student: "Amit Singh (Desk #09)", category: "AC & Cooling Issue", details: "हॉल का तापमान थोड़ा गर्म लग रहा है।", time: "10:30 AM", status: "Resolved" }
-    ];
+    const INITIAL_ISSUES = [];
 
-    // Storage Helpers
     function readStorage(key, fallback) {
       try {
         const item = localStorage.getItem(`bkl_pwa_${key}`);
@@ -748,7 +732,6 @@
       }
     }
 
-    // Application State
     let students = readStorage('students', INITIAL_STUDENTS);
     let movementLogs = readStorage('logs', INITIAL_LOGS);
     let deskIssues = readStorage('issues', INITIAL_ISSUES);
@@ -758,8 +741,47 @@
     let studyTimerInterval = null;
     let pwaInstallPrompt = null;
 
-    // Initialization
+    // URL PARAMETER PARSER (Direct Student Auto-Login from WhatsApp Link)
+    function handleIncomingUrlInvite() {
+      const params = new URLSearchParams(window.location.search);
+      const inviteData = params.get('join');
+      
+      if (inviteData) {
+        try {
+          const decoded = JSON.parse(decodeURIComponent(atob(inviteData)));
+          
+          let existing = students.find(s => s.phone === decoded.phone || s.id === decoded.id);
+          if (!existing) {
+            existing = {
+              id: decoded.id || 'stu_' + Date.now(),
+              name: decoded.name,
+              phone: decoded.phone,
+              desk: decoded.desk || 'General Desk',
+              plan: decoded.plan || 'Full Day (₹600)',
+              feeStatus: decoded.feeStatus || 'Paid',
+              joinDate: decoded.joinDate || new Date().toISOString().split('T')[0],
+              validityDays: decoded.validityDays || 30,
+              status: 'Out',
+              checkedInSince: null
+            };
+            students.push(existing);
+            writeStorage('students', students);
+          }
+          
+          activeStudentId = existing.id;
+          localStorage.setItem('bkl_pwa_active_stu_id', existing.id);
+          
+          window.history.replaceState({}, document.title, window.location.pathname);
+          document.getElementById('welcomeInviteBanner').classList.remove('hidden');
+        } catch (err) {
+          console.error("Could not parse invite link", err);
+        }
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      handleIncomingUrlInvite();
+
       if (!students.find(s => s.id === activeStudentId) && students.length > 0) {
         activeStudentId = students[0].id;
       }
@@ -771,7 +793,6 @@
       setupPwaCapabilities();
     });
 
-    // PWA Manifest and Install Handling
     function setupPwaCapabilities() {
       const dynamicManifest = {
         name: "Baba Kinaram Digital Library",
@@ -782,19 +803,10 @@
         background_color: "#091e3a",
         theme_color: "#091e3a",
         icons: [
-          {
-            src: "https://placehold.co/192x192/091e3a/38bdf8.png?text=BKL",
-            sizes: "192x192",
-            type: "image/png"
-          },
-          {
-            src: "https://placehold.co/512x512/091e3a/38bdf8.png?text=BKL",
-            sizes: "512x512",
-            type: "image/png"
-          }
+          { src: "https://placehold.co/192x192/091e3a/38bdf8.png?text=BKL", sizes: "192x192", type: "image/png" },
+          { src: "https://placehold.co/512x512/091e3a/38bdf8.png?text=BKL", sizes: "512x512", type: "image/png" }
         ]
       };
-
       const blob = new Blob([JSON.stringify(dynamicManifest)], { type: 'application/json' });
       const manifestUrl = URL.createObjectURL(blob);
       const linkTag = document.createElement('link');
@@ -824,7 +836,6 @@
       }
     }
 
-    // Role Switching
     function setAppRole(role) {
       currentRole = role;
       document.getElementById('roleModalOverlay').classList.add('hidden');
@@ -870,7 +881,6 @@
 
     function submitAdminPinCheck() {
       const pin = document.getElementById('adminSecretPinInput').value.trim();
-      // Case-sensitive check for A$HIRV@D
       if (pin === APP_CONFIG.adminPin) {
         setAppRole('admin');
       } else {
@@ -878,7 +888,6 @@
       }
     }
 
-    // Active Student Query
     function getCurrentStudent() {
       return students.find(s => s.id === activeStudentId) || students[0];
     }
@@ -893,13 +902,11 @@
       document.getElementById('activeStudentPhone').innerText = `+91 ${student.phone}`;
       document.getElementById('activeStudentPlan').innerText = student.plan;
 
-      // Validity Calculation
       const joinTs = new Date(student.joinDate).getTime();
       const elapsedDays = Math.floor((Date.now() - joinTs) / (1000 * 60 * 60 * 24));
       const remainingDays = Math.max(0, (student.validityDays || 30) - elapsedDays);
       document.getElementById('activeStudentDaysLeft').innerText = `${remainingDays} Days`;
 
-      // Fee status
       const feeBadge = document.getElementById('activeStudentFeeStatusBadge');
       if (student.feeStatus === 'Paid') {
         feeBadge.className = "text-xs font-bold text-emerald-400 mt-0.5 flex items-center justify-center gap-1";
@@ -909,7 +916,6 @@
         feeBadge.innerHTML = '<i class="fas fa-clock text-[9px]"></i> Due';
       }
 
-      // Occupancy
       const countInside = students.filter(s => s.status === 'In Library').length;
       document.getElementById('portalOccupancyDisplay').innerText = countInside;
 
@@ -992,7 +998,6 @@
       }, 1000);
     }
 
-    // Student Roster Switch Modal
     function openSelectStudentModal() {
       const container = document.getElementById('studentRosterSelectList');
       container.innerHTML = students.map(s => `
@@ -1125,9 +1130,13 @@
           </div>
 
           <div class="flex items-center gap-1.5 self-end sm:self-center">
+            <button onclick="sendStudentDirectInviteWhatsApp('${s.id}')" title="Send Direct App Link" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
+              <i class="fab fa-whatsapp"></i> Invite
+            </button>
+
             ${s.feeStatus === 'Pending' ? `
-              <button onclick="triggerWhatsAppReminder('${s.id}')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
-                <i class="fab fa-whatsapp"></i> Alert
+              <button onclick="triggerWhatsAppReminder('${s.id}')" title="Fee Reminder" class="text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold px-2 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
+                <i class="fas fa-bell"></i>
               </button>
             ` : ''}
 
@@ -1150,6 +1159,32 @@
     function filterAdminStudentRoster() {
       const q = document.getElementById('adminSearchInput').value;
       renderAdminStudentDirectory(q);
+    }
+
+    function generateStudentPersonalLink(student) {
+      const payload = {
+        id: student.id,
+        name: student.name,
+        phone: student.phone,
+        desk: student.desk,
+        plan: student.plan,
+        feeStatus: student.feeStatus,
+        joinDate: student.joinDate,
+        validityDays: student.validityDays
+      };
+      const encoded = btoa(encodeURIComponent(JSON.stringify(payload)));
+      const baseAppUrl = window.location.origin + window.location.pathname;
+      return `${baseAppUrl}?join=${encoded}`;
+    }
+
+    function sendStudentDirectInviteWhatsApp(id) {
+      const s = students.find(item => item.id === id);
+      if (!s) return;
+
+      const directLink = generateStudentPersonalLink(s);
+      const textMsg = `नमस्ते *${s.name}* जी! 📚%0A%0A*Baba Kinaram Digital Library* (Behind Hanuman Mandir, Ramgarh) में आपका स्वागत है।%0A%0A📌 *आपकी आवंटित सीट:* ${encodeURIComponent(s.desk || 'General')}%0A📌 *स्टडी प्लान:* ${encodeURIComponent(s.plan)}%0A%0A📲 *अपना पर्सनल अटेंडेंस और लाइब्रेरी ऐप खोलने के लिए नीचे दिए गए लिंक पर क्लिक करें:*%0A${encodeURIComponent(directLink)}%0A%0A(इस लिंक को खोलकर ऊपर 3 डॉट्स दबाकर *Add to Home screen* कर लें ताकि ऐप आइकन आपके फोन में आ जाए)।%0Aधन्यवाद! 🙏`;
+
+      window.open(`https://wa.me/91${s.phone}?text=${textMsg}`, '_blank');
     }
 
     function forceStudentCheckOut(id) {
@@ -1200,7 +1235,6 @@
       window.open(`https://wa.me/91${s.phone}?text=${message}`, '_blank');
     }
 
-    // Student Add & Edit Form
     function openStudentModal() {
       document.getElementById('formStudentId').value = '';
       document.getElementById('studentModalHeading').innerText = 'विद्यार्थी जोड़ें (Add Student)';
@@ -1248,20 +1282,23 @@
       const feeStatus = document.getElementById('inputStudentFeeStatus').value;
       const joinDate = document.getElementById('inputStudentJoinDate').value || new Date().toISOString().split('T')[0];
       const validityDays = parseInt(document.getElementById('inputStudentValidityDays').value) || 30;
+      const shouldSendInvite = document.getElementById('sendWhatsAppInviteCheckbox').checked;
+
+      let targetStudent = null;
 
       if (editId) {
-        const s = students.find(item => item.id === editId);
-        if (s) {
-          s.name = name;
-          s.phone = phone;
-          s.desk = desk;
-          s.plan = plan;
-          s.feeStatus = feeStatus;
-          s.joinDate = joinDate;
-          s.validityDays = validityDays;
+        targetStudent = students.find(item => item.id === editId);
+        if (targetStudent) {
+          targetStudent.name = name;
+          targetStudent.phone = phone;
+          targetStudent.desk = desk;
+          targetStudent.plan = plan;
+          targetStudent.feeStatus = feeStatus;
+          targetStudent.joinDate = joinDate;
+          targetStudent.validityDays = validityDays;
         }
       } else {
-        const newStudent = {
+        targetStudent = {
           id: 'stu_' + Date.now(),
           name,
           phone,
@@ -1273,17 +1310,20 @@
           status: 'Out',
           checkedInSince: null
         };
-        students.push(newStudent);
-        activeStudentId = newStudent.id;
+        students.push(targetStudent);
+        activeStudentId = targetStudent.id;
       }
 
       writeStorage('students', students);
       closeStudentModal();
       renderAdminDashboard();
       renderStudentPortal();
+
+      if (shouldSendInvite && targetStudent) {
+        sendStudentDirectInviteWhatsApp(targetStudent.id);
+      }
     }
 
-    // Desk Ticket Maintenance
     function openReportIssueModal() {
       document.getElementById('issueTicketModal').classList.remove('hidden');
     }
@@ -1354,7 +1394,6 @@
       }
     }
 
-    // Attendance Log Renderer
     function renderMovementHistoryLogs() {
       const container = document.getElementById('adminMovementLogsContainer');
       if (movementLogs.length === 0) {
@@ -1385,7 +1424,6 @@
       }
     }
 
-    // Notice Broadcast System
     function renderNotice() {
       const banner = document.getElementById('noticeBanner');
       if (noticeMessage && noticeMessage.trim() !== '') {
@@ -1423,7 +1461,6 @@
       renderNotice();
     }
 
-    // Direct Quick Contacts
     function handleStudentRenewFee() {
       const stu = getCurrentStudent();
       const msg = `नमस्ते सर,%0A%0Aमैं *${stu.name}* (Baba Kinaram Digital Library, Ramgarh).%0Aमुझे अपनी लाइब्रेरी फीस जमा करनी है।%0A%0A📌 *Plan:* ${encodeURIComponent(stu.plan)}%0A📍 *Desk:* ${encodeURIComponent(stu.desk || 'General Desk')}%0A%0Aकृपया UPI QR कोड भेजें।`;
