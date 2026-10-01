@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#091e3a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Digital Library - Baba Kinaram Digital Library Management</title>
+  <title>Digital Library - Management App</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -87,7 +87,7 @@
           <img src="logo.png" alt="Baba Kinaram Digital Library" class="w-full h-full object-cover rounded-xl" onerror="this.onerror=null; this.src='https://placehold.co/100x100/091e3a/eab308?text=BKDL';">
         </div>
         <h2 class="text-xl font-black text-white tracking-tight">Baba Kinaram Digital Library</h2>
-        <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt text-amber-400 text-[10px]"></i> Behind Hanuman Mandir, Ramgarh</p>
+        <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt text-amber-400 text-[10px]"></i> Near Hanuman Mandir, Ramgarh</p>
         <p class="text-[11px] text-emerald-400 font-semibold mt-1">Operational Hours: 7:00 AM – 9:00 PM Daily</p>
       </div>
 
@@ -176,7 +176,7 @@
             <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">DIGITAL LIBRARY</span>
           </h1>
           <p class="text-[11px] text-slate-400 flex items-center gap-1">
-            <i class="fas fa-map-marker-alt text-cyan-400 text-[9px]"></i> Behind Hanuman Mandir, Ramgarh
+            <i class="fas fa-map-marker-alt text-cyan-400 text-[9px]"></i> Near Hanuman Mandir, Ramgarh
           </p>
         </div>
       </div>
@@ -260,9 +260,7 @@
           </div>
           <div class="bg-slate-950/60 rounded-xl p-2 border border-slate-800/80">
             <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Fee Status</p>
-            <p class="text-xs font-bold text-emerald-400 mt-0.5 flex items-center justify-center gap-1" id="activeStudentFeeStatusBadge">
-              <i class="fas fa-circle-check text-[9px]"></i> Paid
-            </p>
+            <div id="activeStudentFeeStatusBadge" class="mt-0.5 flex items-center justify-center"></div>
           </div>
         </div>
       </div>
@@ -304,13 +302,13 @@
 
       <!-- Quick Action Utilities -->
       <div class="grid grid-cols-2 gap-3">
-        <button onclick="handleStudentRenewFee()" class="bg-slate-900 hover:bg-slate-850 p-3.5 rounded-2xl border border-slate-800 text-left transition flex items-start space-x-3 group">
+        <button onclick="openUpiPaymentModal()" class="bg-slate-900 hover:bg-slate-850 p-3.5 rounded-2xl border border-slate-800 text-left transition flex items-start space-x-3 group">
           <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition">
-            <i class="fab fa-whatsapp"></i>
+            <i class="fas fa-qrcode"></i>
           </div>
           <div>
             <h4 class="text-xs font-bold text-white group-hover:text-emerald-400 transition">Pay / Renew Fee</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5">UPI QR / WhatsApp</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">Instant UPI QR & Receipts</p>
           </div>
         </button>
 
@@ -420,7 +418,27 @@
         </div>
       </div>
 
-      <!-- Admin Utilities Bar -->
+      <!-- NEW FEATURE 5: Visual Seat Grid Visualizer (Seats 1 to 40) -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fas fa-th text-cyan-400"></i>
+              <span>Interactive Seat Map (40 Seats)</span>
+            </h3>
+            <p class="text-[11px] text-slate-400">Green = Vacant, Red = Occupied in Study Hall</p>
+          </div>
+          <div class="flex items-center gap-2 text-[10px]">
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-500"></span> Vacant</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span> Occupied</span>
+          </div>
+        </div>
+        <div id="seatGridMapContainer" class="grid grid-cols-8 sm:grid-cols-10 gap-1.5 pt-1">
+          <!-- Dynamically generated seats 1 to 40 -->
+        </div>
+      </div>
+
+      <!-- Quick Admin Utilities Bar (With Excel Export & Bulk Messaging) -->
       <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex flex-wrap gap-2 items-center justify-between shadow-md">
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="openStudentModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95">
@@ -431,6 +449,12 @@
           <button onclick="openBulkFeeMessageModal()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95">
             <i class="fab fa-whatsapp text-sm"></i>
             <span>Send Bulk Fee Messages</span>
+          </button>
+
+          <!-- NEW FEATURE 3: Download Excel/CSV Attendance Report -->
+          <button onclick="exportAttendanceReportCSV()" class="bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95">
+            <i class="fas fa-file-excel text-sm"></i>
+            <span>Export Attendance CSV</span>
           </button>
 
           <button onclick="openNoticeBroadcastModal()" class="bg-slate-800 hover:bg-slate-750 text-amber-300 font-semibold text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition active:scale-95">
@@ -446,7 +470,7 @@
         </div>
       </div>
 
-      <!-- Live Attendance Roster -->
+      <!-- Live Attendance Roster with Shift Counters -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -459,7 +483,7 @@
         <div class="space-y-2" id="currentlyPresentRoster"></div>
       </div>
 
-      <!-- Student Directory with Filter Tabs & Search -->
+      <!-- Student Directory with SHIFT & FEE FILTER TABS & Search -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
           <div>
@@ -467,7 +491,7 @@
               <i class="fas fa-address-book text-cyan-400"></i>
               <span>Student Directory & Shifts</span>
             </h3>
-            <p class="text-[11px] text-slate-400">Shift 1 (7AM-2PM) & Shift 2 (2PM-9PM) status</p>
+            <p class="text-[11px] text-slate-400">Filter students by fee status or shifts</p>
           </div>
 
           <div class="relative">
@@ -476,20 +500,30 @@
           </div>
         </div>
 
-        <!-- Filter Tabs -->
+        <!-- NEW FEATURE 1: Comprehensive Shift & Fee Filters -->
         <div class="flex items-center gap-2 pb-3 border-b border-slate-800 mb-3 overflow-x-auto scrollbar-none">
-          <button id="filterBtnAll" onclick="setFeeFilter('all')" class="text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-cyan-500 text-slate-950">
+          <button id="filterBtnAll" onclick="setFeeFilter('all')" class="text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-cyan-500 text-slate-950 shrink-0">
             <span>All Students</span>
             <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-950/20 text-slate-950 font-black" id="countFilterAll">0</span>
           </button>
 
-          <button id="filterBtnDue" onclick="setFeeFilter('due')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-amber-300 border border-slate-700 hover:bg-slate-750">
+          <button id="filterBtnShift1" onclick="setFeeFilter('shift1')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-cyan-300 border border-slate-700 hover:bg-slate-750 shrink-0">
+            <span>Shift 1 (7AM-2PM)</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-cyan-500/20 text-cyan-300 font-bold" id="countFilterShift1">0</span>
+          </button>
+
+          <button id="filterBtnShift2" onclick="setFeeFilter('shift2')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-teal-300 border border-slate-700 hover:bg-slate-750 shrink-0">
+            <span>Shift 2 (2PM-9PM)</span>
+            <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-teal-500/20 text-teal-300 font-bold" id="countFilterShift2">0</span>
+          </button>
+
+          <button id="filterBtnDue" onclick="setFeeFilter('due')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-amber-300 border border-slate-700 hover:bg-slate-750 shrink-0">
             <i class="fas fa-exclamation-circle text-[10px]"></i>
-            <span>Due / Pending</span>
+            <span>Due / Expired</span>
             <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/20 text-amber-300 font-bold" id="countFilterDue">0</span>
           </button>
 
-          <button id="filterBtnPaid" onclick="setFeeFilter('paid')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-emerald-400 border border-slate-700 hover:bg-slate-750">
+          <button id="filterBtnPaid" onclick="setFeeFilter('paid')" class="text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-emerald-400 border border-slate-700 hover:bg-slate-750 shrink-0">
             <i class="fas fa-check-circle text-[10px]"></i>
             <span>Fee Paid</span>
             <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-emerald-500/20 text-emerald-400 font-bold" id="countFilterPaid">0</span>
@@ -564,6 +598,43 @@
     </div>
   </footer>
 
+  <!-- ================= NEW FEATURE 4: IN-APP DYNAMIC UPI PAYMENT MODAL ================= -->
+  <div id="upiPaymentModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 text-center shadow-2xl relative">
+      <button onclick="closeUpiPaymentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-3 shadow-lg shadow-emerald-500/10">
+        <i class="fas fa-qrcode"></i>
+      </div>
+
+      <h3 class="text-base font-black text-white">Direct UPI Fee Payment</h3>
+      <p class="text-xs text-slate-400 mt-1 mb-4">Scan QR using PhonePe, Google Pay, or Paytm</p>
+
+      <div class="bg-white p-3 rounded-2xl inline-block mb-3 shadow-xl shadow-cyan-500/10 border-2 border-emerald-500">
+        <!-- Live Generated Dynamic QR Code -->
+        <img id="dynamicUpiQrImg" src="" alt="UPI QR Code" class="w-48 h-48 mx-auto object-contain">
+      </div>
+
+      <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-xs text-left mb-4 space-y-1">
+        <div class="flex justify-between text-slate-300">
+          <span>Payee UPI:</span>
+          <span class="font-bold text-cyan-400 select-all">9140176272@ybl</span>
+        </div>
+        <div class="flex justify-between text-slate-300">
+          <span>Amount Payable:</span>
+          <span class="font-bold text-emerald-400" id="upiModalAmountDisplay">₹400</span>
+        </div>
+      </div>
+
+      <button onclick="notifyAdminPaymentDone()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs rounded-xl transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 active:scale-95">
+        <i class="fab fa-whatsapp text-sm"></i>
+        <span>Send Payment Screenshot via WhatsApp</span>
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL: Bulk Fee Messages on WhatsApp -->
   <div id="bulkMessageModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
@@ -587,7 +658,7 @@
           <input type="radio" name="bulkRecipientType" value="due" checked onchange="updateBulkMessagePreview()" class="w-4 h-4 text-amber-500 bg-slate-950 border-slate-700">
           <div>
             <span class="text-xs font-bold text-amber-300">Only Fee Due (Pending)</span>
-            <p class="text-[10px] text-slate-400">Students whose payment is pending</p>
+            <p class="text-[10px] text-slate-400">Students whose payment is pending or expired</p>
           </div>
         </label>
 
@@ -770,12 +841,13 @@
   </div>
 
   <script>
-    /* BABA KINARAM DIGITAL LIBRARY - HIGH SECURITY AUTHENTICATED SYSTEM */
+    /* BABA KINARAM DIGITAL LIBRARY - ENHANCED 5-FEATURE INTEGRATION */
 
     const APP_CONFIG = {
       name: "Baba Kinaram Digital Library",
-      address: "Behind Hanuman Mandir, Ramgarh",
+      address: "Near Hanuman Mandir, Ramgarh",
       phone: "9140176272",
+      upiId: "9140176272@ybl",
       email: "ashirvadyadavv@gmail.com",
       adminPin: "Akhil@9140",
       totalSeats: 40,
@@ -823,7 +895,7 @@
     let students = readStorage('students', INITIAL_STUDENTS);
     let movementLogs = readStorage('logs', INITIAL_LOGS);
     let deskIssues = readStorage('issues', INITIAL_ISSUES);
-    let noticeMessage = readStorage('notice', "Welcome to Baba Kinaram Digital Library. Shift 1 (7AM-2PM) & Shift 2 (2PM-9PM) are active.");
+    let noticeMessage = readStorage('notice', "Welcome to Baba Kinaram Digital Library (Near Hanuman Mandir). Shift 1 (7AM-2PM) & Shift 2 (2PM-9PM) are active.");
     
     let authenticatedRole = sessionStorage.getItem('bkl_auth_role') || 'none';
     let authenticatedStudentId = sessionStorage.getItem('bkl_auth_student_id') || null;
@@ -831,6 +903,26 @@
     let studyTimerInterval = null;
     let pwaInstallPrompt = null;
     let activeFeeFilter = 'all';
+
+    /* ================= FEATURE 2 ENGINE: AUTOMATED EXPIRY & STATUS ================= */
+    function evaluateStudentFeeExpiry(student) {
+      const joinTs = new Date(student.joinDate).getTime();
+      const validity = student.validityDays || 30;
+      const elapsedDays = Math.floor((Date.now() - joinTs) / (1000 * 60 * 60 * 24));
+      const remainingDays = Math.max(0, validity - elapsedDays);
+
+      if (student.feeStatus === 'Pending') {
+        return { status: 'Due', badgeClass: 'bg-rose-500/20 text-rose-400 border border-rose-500/30', label: 'Due / Unpaid', daysLeft: remainingDays };
+      }
+
+      if (remainingDays === 0) {
+        return { status: 'Expired', badgeClass: 'bg-rose-500/20 text-rose-400 border border-rose-500/30', label: 'Expired (Due)', daysLeft: 0 };
+      } else if (remainingDays <= 2) {
+        return { status: 'Expiring Soon', badgeClass: 'bg-amber-500/20 text-amber-300 border border-amber-500/30', label: `${remainingDays}d Left (Expiring)`, daysLeft: remainingDays };
+      } else {
+        return { status: 'Paid', badgeClass: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30', label: 'Paid & Active', daysLeft: remainingDays };
+      }
+    }
 
     function handleIncomingUrlInvite() {
       const params = new URLSearchParams(window.location.search);
@@ -1011,19 +1103,11 @@
       document.getElementById('activeStudentPhone').innerText = `+91 ${student.phone}`;
       document.getElementById('activeStudentPlan').innerText = student.plan;
 
-      const joinTs = new Date(student.joinDate).getTime();
-      const elapsedDays = Math.floor((Date.now() - joinTs) / (1000 * 60 * 60 * 24));
-      const remainingDays = Math.max(0, (student.validityDays || 30) - elapsedDays);
-      document.getElementById('activeStudentDaysLeft').innerText = `${remainingDays} Days`;
+      const evalData = evaluateStudentFeeExpiry(student);
+      document.getElementById('activeStudentDaysLeft').innerText = `${evalData.daysLeft} Days`;
 
       const feeBadge = document.getElementById('activeStudentFeeStatusBadge');
-      if (student.feeStatus === 'Paid') {
-        feeBadge.className = "text-xs font-bold text-emerald-400 mt-0.5 flex items-center justify-center gap-1";
-        feeBadge.innerHTML = '<i class="fas fa-circle-check text-[9px]"></i> Paid';
-      } else {
-        feeBadge.className = "text-xs font-bold text-amber-400 mt-0.5 flex items-center justify-center gap-1";
-        feeBadge.innerHTML = '<i class="fas fa-clock text-[9px]"></i> Due';
-      }
+      feeBadge.innerHTML = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${evalData.badgeClass}">${evalData.label}</span>`;
 
       const countInside = students.filter(s => s.status === 'In Library').length;
       document.getElementById('portalOccupancyDisplay').innerText = countInside;
@@ -1109,25 +1193,109 @@
       }, 1000);
     }
 
+    /* ================= FEATURE 4: UPI PAYMENT MODAL ================= */
+    function openUpiPaymentModal() {
+      const stu = getCurrentStudent();
+      let amt = 400;
+      if (stu.plan.includes('200')) amt = 200;
+      else if (stu.plan.includes('300')) amt = 300;
+      else if (stu.plan.includes('600')) amt = 600;
+
+      document.getElementById('upiModalAmountDisplay').innerText = `₹${amt}`;
+      
+      // Dynamic UPI QR Link
+      const upiLink = `upi://pay?pa=${APP_CONFIG.upiId}&pn=BabaKinaramLibrary&am=${amt}&cu=INR&tn=Fee_${encodeURIComponent(stu.name)}`;
+      const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(upiLink)}`;
+      document.getElementById('dynamicUpiQrImg').src = qrApi;
+
+      document.getElementById('upiPaymentModal').classList.remove('hidden');
+    }
+
+    function closeUpiPaymentModal() {
+      document.getElementById('upiPaymentModal').classList.add('hidden');
+    }
+
+    function notifyAdminPaymentDone() {
+      const stu = getCurrentStudent();
+      const msg = `Hello Sir,%0A%0AI have made my fee payment of ${document.getElementById('upiModalAmountDisplay').innerText} for *${stu.name}* (Seat: ${encodeURIComponent(stu.desk || 'General')}, Plan: ${encodeURIComponent(stu.plan)}).%0A%0AAttaching payment screenshot below! 🙏`;
+      window.open(`https://wa.me/91${APP_CONFIG.phone}?text=${msg}`, '_blank');
+      closeUpiPaymentModal();
+    }
+
+    /* ================= FEATURE 5: 40-SEAT INTERACTIVE GRID ================= */
+    function renderSeatGridMap() {
+      const container = document.getElementById('seatGridMapContainer');
+      if (!container) return;
+
+      let html = '';
+      for (let i = 1; i <= APP_CONFIG.totalSeats; i++) {
+        const seatLabel = `Seat #${i < 10 ? '0' + i : i}`;
+        const occStudent = students.find(s => (s.desk && s.desk.includes(`#${i}`)) || (s.desk && s.desk.includes(`#0${i}`)));
+        const isInside = occStudent && occStudent.status === 'In Library';
+
+        html += `
+          <div title="${occStudent ? occStudent.name + ' (' + occStudent.plan + ')' : 'Vacant Seat'}" class="p-2 rounded-xl border text-center transition flex flex-col items-center justify-center cursor-pointer ${
+            isInside 
+              ? 'bg-rose-500/20 border-rose-500/50 text-rose-300' 
+              : occStudent 
+                ? 'bg-amber-500/10 border-amber-500/30 text-amber-200' 
+                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300 hover:border-emerald-400'
+          }">
+            <i class="fas fa-chair text-xs mb-0.5"></i>
+            <span class="text-[9px] font-mono font-bold leading-none">${i}</span>
+          </div>
+        `;
+      }
+      container.innerHTML = html;
+    }
+
+    /* ================= FEATURE 3: EXPORT ATTENDANCE CSV ================= */
+    function exportAttendanceReportCSV() {
+      if (movementLogs.length === 0) {
+        alert("No attendance logs available to export.");
+        return;
+      }
+
+      let csv = "Log ID,Student Name,Action / Hours,Time,Seat Number,Date\n";
+      const todayDate = new Date().toISOString().split('T')[0];
+
+      movementLogs.forEach(l => {
+        const cleanName = `"${(l.name || '').replace(/"/g, '""')}"`;
+        const cleanAction = `"${(l.action || '').replace(/"/g, '""')}"`;
+        const cleanDesk = `"${(l.desk || '').replace(/"/g, '""')}"`;
+        csv += `${l.id},${cleanName},${cleanAction},${l.time},${cleanDesk},${todayDate}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Digital_Library_Attendance_${todayDate}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
     /* ================= ADMIN DASHBOARD LOGIC ================= */
     function setFeeFilter(filterType) {
       activeFeeFilter = filterType;
       
       const btnAll = document.getElementById('filterBtnAll');
+      const btnShift1 = document.getElementById('filterBtnShift1');
+      const btnShift2 = document.getElementById('filterBtnShift2');
       const btnDue = document.getElementById('filterBtnDue');
       const btnPaid = document.getElementById('filterBtnPaid');
 
-      btnAll.className = "text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-750";
-      btnDue.className = "text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-amber-300 border border-slate-700 hover:bg-slate-750";
-      btnPaid.className = "text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-emerald-400 border border-slate-700 hover:bg-slate-750";
+      const allBtns = [btnAll, btnShift1, btnShift2, btnDue, btnPaid];
+      allBtns.forEach(b => {
+        if (b) b.className = "text-xs px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-750 shrink-0";
+      });
 
-      if (filterType === 'all') {
-        btnAll.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-cyan-500 text-slate-950";
-      } else if (filterType === 'due') {
-        btnDue.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-amber-500 text-slate-950";
-      } else if (filterType === 'paid') {
-        btnPaid.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-emerald-500 text-slate-950";
-      }
+      if (filterType === 'all') btnAll.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-cyan-500 text-slate-950 shrink-0";
+      else if (filterType === 'shift1') btnShift1.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-cyan-400 text-slate-950 shrink-0";
+      else if (filterType === 'shift2') btnShift2.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-teal-400 text-slate-950 shrink-0";
+      else if (filterType === 'due') btnDue.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-amber-500 text-slate-950 shrink-0";
+      else if (filterType === 'paid') btnPaid.className = "text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 bg-emerald-500 text-slate-950 shrink-0";
 
       filterAdminStudentRoster();
     }
@@ -1135,8 +1303,10 @@
     function renderAdminDashboard() {
       const presentCount = students.filter(s => s.status === 'In Library').length;
       const totalCount = students.length;
-      const feePendingCount = students.filter(s => s.feeStatus === 'Pending').length;
-      const feePaidCount = students.filter(s => s.feeStatus === 'Paid').length;
+      const feePendingCount = students.filter(s => evaluateStudentFeeExpiry(s).status !== 'Paid').length;
+      const feePaidCount = students.filter(s => evaluateStudentFeeExpiry(s).status === 'Paid').length;
+      const shift1Count = students.filter(s => s.plan.includes('Shift 1')).length;
+      const shift2Count = students.filter(s => s.plan.includes('Shift 2')).length;
 
       let totalCollected = 0;
       students.forEach(s => {
@@ -1154,10 +1324,14 @@
       document.getElementById('metricPendingFeeCount').innerText = feePendingCount;
       document.getElementById('adminPresentBadge').innerText = `${presentCount} / 40 Active in Hall`;
 
+      // Filter Counts
       document.getElementById('countFilterAll').innerText = totalCount;
+      document.getElementById('countFilterShift1').innerText = shift1Count;
+      document.getElementById('countFilterShift2').innerText = shift2Count;
       document.getElementById('countFilterDue').innerText = feePendingCount;
       document.getElementById('countFilterPaid').innerText = feePaidCount;
 
+      renderSeatGridMap();
       renderPresentRoster();
       filterAdminStudentRoster();
       renderAdminTickets();
@@ -1207,8 +1381,11 @@
       const q = filter.toLowerCase();
 
       let filteredList = students.filter(s => {
-        if (activeFeeFilter === 'due' && s.feeStatus !== 'Pending') return false;
-        if (activeFeeFilter === 'paid' && s.feeStatus !== 'Paid') return false;
+        const evalData = evaluateStudentFeeExpiry(s);
+        if (activeFeeFilter === 'due' && evalData.status === 'Paid') return false;
+        if (activeFeeFilter === 'paid' && evalData.status !== 'Paid') return false;
+        if (activeFeeFilter === 'shift1' && !s.plan.includes('Shift 1')) return false;
+        if (activeFeeFilter === 'shift2' && !s.plan.includes('Shift 2')) return false;
         
         return (
           s.name.toLowerCase().includes(q) ||
@@ -1219,53 +1396,56 @@
       });
 
       if (filteredList.length === 0) {
-        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">No student records found (Filter: ${activeFeeFilter.toUpperCase()}).</div>`;
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">No student records match filter (${activeFeeFilter.toUpperCase()}).</div>`;
         return;
       }
 
-      container.innerHTML = filteredList.map(s => `
-        <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-          <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-cyan-300">
-              ${s.name.charAt(0)}
-            </div>
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="text-xs font-bold text-white">${s.name}</span>
-                <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold ${s.feeStatus === 'Paid' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
-                  ${s.feeStatus}
-                </span>
-                <span class="text-[10px] text-slate-400">${s.desk || 'No seat'}</span>
+      container.innerHTML = filteredList.map(s => {
+        const evalData = evaluateStudentFeeExpiry(s);
+        return `
+          <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-cyan-300">
+                ${s.name.charAt(0)}
               </div>
-              <p class="text-[11px] text-slate-400">${s.phone} • <strong class="text-cyan-400">${s.plan}</strong></p>
+              <div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-bold text-white">${s.name}</span>
+                  <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold ${evalData.badgeClass}">
+                    ${evalData.label}
+                  </span>
+                  <span class="text-[10px] text-slate-400">${s.desk || 'No seat'}</span>
+                </div>
+                <p class="text-[11px] text-slate-400">${s.phone} • <strong class="text-cyan-400">${s.plan}</strong></p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 self-end sm:self-center">
+              <button onclick="sendStudentDirectInviteWhatsApp('${s.id}')" title="Send Direct App Link" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
+                <i class="fab fa-whatsapp"></i> Invite
+              </button>
+
+              ${evalData.status !== 'Paid' ? `
+                <button onclick="triggerWhatsAppReminder('${s.id}')" title="Fee Reminder" class="text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold px-2 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
+                  <i class="fas fa-bell"></i>
+                </button>
+              ` : ''}
+
+              <button onclick="switchStudentFeeStatus('${s.id}')" title="Toggle Fee Status" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
+                <i class="fas fa-coins text-amber-400"></i>
+              </button>
+
+              <button onclick="openEditStudentModal('${s.id}')" title="Edit Student" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
+                <i class="fas fa-pen text-cyan-400"></i>
+              </button>
+
+              <button onclick="removeStudent('${s.id}')" title="Delete Student" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
+                <i class="fas fa-trash-alt text-rose-400"></i>
+              </button>
             </div>
           </div>
-
-          <div class="flex items-center gap-1.5 self-end sm:self-center">
-            <button onclick="sendStudentDirectInviteWhatsApp('${s.id}')" title="Send Direct App Link" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
-              <i class="fab fa-whatsapp"></i> Invite
-            </button>
-
-            ${s.feeStatus === 'Pending' ? `
-              <button onclick="triggerWhatsAppReminder('${s.id}')" title="Fee Reminder" class="text-xs bg-amber-600 hover:bg-amber-500 text-white font-semibold px-2 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
-                <i class="fas fa-bell"></i>
-              </button>
-            ` : ''}
-
-            <button onclick="switchStudentFeeStatus('${s.id}')" title="Toggle Fee Status" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
-              <i class="fas fa-coins text-amber-400"></i>
-            </button>
-
-            <button onclick="openEditStudentModal('${s.id}')" title="Edit Student" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
-              <i class="fas fa-pen text-cyan-400"></i>
-            </button>
-
-            <button onclick="removeStudent('${s.id}')" title="Delete Student" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
-              <i class="fas fa-trash-alt text-rose-400"></i>
-            </button>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function filterAdminStudentRoster() {
@@ -1294,9 +1474,9 @@
       }
 
       if (targetType === 'due') {
-        return { type: 'due', list: students.filter(s => s.feeStatus === 'Pending') };
+        return { type: 'due', list: students.filter(s => evaluateStudentFeeExpiry(s).status !== 'Paid') };
       } else if (targetType === 'paid') {
-        return { type: 'paid', list: students.filter(s => s.feeStatus === 'Paid') };
+        return { type: 'paid', list: students.filter(s => evaluateStudentFeeExpiry(s).status === 'Paid') };
       } else {
         return { type: 'both', list: [...students] };
       }
@@ -1311,11 +1491,11 @@
       countBadge.innerText = `${list.length} Students Selected`;
 
       if (type === 'due') {
-        customTextArea.value = "This is a polite reminder from Baba Kinaram Digital Library regarding your study shift fee renewal. Kindly renew to avoid seat reallocation. PhonePe/GPay: 9140176272";
+        customTextArea.value = "This is an official fee reminder from Baba Kinaram Digital Library (Near Hanuman Mandir, Ramgarh). Kindly clear your renewal fee to continue your study shift. UPI: 9140176272@ybl";
       } else if (type === 'paid') {
-        customTextArea.value = "Your monthly library fee is fully updated. Thank you for maintaining discipline and silence in the halls. Happy studying!";
+        customTextArea.value = "Your monthly library fee is up-to-date. Thank you for maintaining study discipline at Baba Kinaram Digital Library. Happy learning!";
       } else {
-        customTextArea.value = "Notice from Baba Kinaram Digital Library (Behind Hanuman Mandir, Ramgarh). Library timings are 7:00 AM – 9:00 PM daily. Please adhere strictly to your assigned shift.";
+        customTextArea.value = "Announcement from Baba Kinaram Digital Library (Near Hanuman Mandir, Ramgarh). Operating hours are 7:00 AM – 9:00 PM daily. Please follow your shift timing.";
       }
 
       if (list.length === 0) {
@@ -1323,18 +1503,21 @@
         return;
       }
 
-      listContainer.innerHTML = list.map(s => `
-        <div class="p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
-          <div class="flex items-center space-x-2">
-            <span class="w-2 h-2 rounded-full ${s.feeStatus === 'Paid' ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
-            <span class="font-semibold text-slate-200">${s.name}</span>
-            <span class="text-[10px] text-slate-400 font-mono">${s.phone}</span>
+      listContainer.innerHTML = list.map(s => {
+        const evalData = evaluateStudentFeeExpiry(s);
+        return `
+          <div class="p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs">
+            <div class="flex items-center space-x-2">
+              <span class="w-2 h-2 rounded-full ${evalData.status === 'Paid' ? 'bg-emerald-400' : 'bg-amber-400'}"></span>
+              <span class="font-semibold text-slate-200">${s.name}</span>
+              <span class="text-[10px] text-slate-400 font-mono">${s.phone}</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${evalData.badgeClass}">
+              ${evalData.label}
+            </span>
           </div>
-          <span class="text-[9px] px-1.5 py-0.2 rounded font-bold ${s.feeStatus === 'Paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
-            ${s.feeStatus}
-          </span>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function startBulkDispatch() {
@@ -1360,8 +1543,8 @@
         }
 
         const s = list[currentIndex];
-        const statusText = s.feeStatus === 'Paid' ? 'Paid' : 'Due / Pending';
-        const fullMsg = `Hello *${s.name}*! 📚%0A%0A*Baba Kinaram Digital Library*%0A📍 Behind Hanuman Mandir, Ramgarh%0A⏰ Open: 7:00 AM – 9:00 PM Daily%0A━━━━━━━━━━━━━━━━━━━━%0A📌 *Plan/Shift:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* ${encodeURIComponent(statusText)}%0A━━━━━━━━━━━━━━━━━━━━%0A${encodeURIComponent(baseNote)}%0A%0AThank you! 🙏`;
+        const evalData = evaluateStudentFeeExpiry(s);
+        const fullMsg = `Hello *${s.name}*! 📚%0A%0A*Baba Kinaram Digital Library*%0A📍 Near Hanuman Mandir, Ramgarh%0A⏰ Open: 7:00 AM – 9:00 PM Daily%0A━━━━━━━━━━━━━━━━━━━━%0A📌 *Plan/Shift:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* ${encodeURIComponent(evalData.label)}%0A━━━━━━━━━━━━━━━━━━━━%0A${encodeURIComponent(baseNote)}%0A%0AThank you! 🙏`;
 
         window.open(`https://wa.me/91${s.phone}?text=${fullMsg}`, '_blank');
         currentIndex++;
@@ -1399,7 +1582,7 @@
       if (!s) return;
 
       const directLink = generateStudentPersonalLink(s);
-      const textMsg = `Hello *${s.name}*! 📚%0A%0AWelcome to *Baba Kinaram Digital Library* (Behind Hanuman Mandir, Ramgarh).%0A⏰ *Hours:* 7:00 AM – 9:00 PM%0A%0A📌 *Allocated Seat:* ${encodeURIComponent(s.desk || 'General')}%0A📌 *Assigned Shift:* ${encodeURIComponent(s.plan)}%0A%0A📲 *Access your personal attendance dashboard here:*%0A${encodeURIComponent(directLink)}%0A%0A(Open the link and select 'Add to Home screen' from your browser menu to install).%0AThank you! 🙏`;
+      const textMsg = `Hello *${s.name}*! 📚%0A%0AWelcome to *Baba Kinaram Digital Library* (Near Hanuman Mandir, Ramgarh).%0A⏰ *Hours:* 7:00 AM – 9:00 PM%0A%0A📌 *Allocated Seat:* ${encodeURIComponent(s.desk || 'General')}%0A📌 *Assigned Shift:* ${encodeURIComponent(s.plan)}%0A%0A📲 *Access your personal dashboard & study timer here:*%0A${encodeURIComponent(directLink)}%0A%0A(Open the link and select 'Add to Home screen' to install Digital Library on your phone).%0AThank you! 🙏`;
 
       window.open(`https://wa.me/91${s.phone}?text=${textMsg}`, '_blank');
     }
@@ -1446,7 +1629,7 @@
       const s = students.find(item => item.id === id);
       if (!s) return;
 
-      const message = `Hello ${s.name},%0A%0AThis is an official fee reminder from *Baba Kinaram Digital Library (Behind Hanuman Mandir, Ramgarh)*.%0A⏰ *Hours:* 7:00 AM – 9:00 PM%0A%0A📌 *Shift/Plan:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* Due / Pending%0A%0APlease renew your seat to ensure uninterrupted study access.%0AOnline payment UPI: *${APP_CONFIG.phone}*%0AThank you!`;
+      const message = `Hello ${s.name},%0A%0AThis is an official fee reminder from *Baba Kinaram Digital Library (Near Hanuman Mandir, Ramgarh)*.%0A⏰ *Hours:* 7:00 AM – 9:00 PM%0A%0A📌 *Shift/Plan:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* Due / Pending%0A%0APlease renew your seat to avoid seat reallocation.%0AOnline payment UPI: *${APP_CONFIG.phone}*%0AThank you!`;
       window.open(`https://wa.me/91${s.phone}?text=${message}`, '_blank');
     }
 
@@ -1682,12 +1865,6 @@
       renderNotice();
     }
 
-    function handleStudentRenewFee() {
-      const stu = getCurrentStudent();
-      const msg = `Hello Sir,%0A%0AI am *${stu.name}* from Baba Kinaram Digital Library.%0AI would like to submit my fee renewal.%0A%0A📌 *Plan/Shift:* ${encodeURIComponent(stu.plan)}%0A📍 *Seat:* ${encodeURIComponent(stu.desk || 'General Seat')}%0A%0AKindly share the UPI QR code.`;
-      window.open(`https://wa.me/91${APP_CONFIG.phone}?text=${msg}`, '_blank');
-    }
-
     function openWhatsAppChatDirect() {
       window.open(`https://wa.me/91${APP_CONFIG.phone}?text=Hello%20Sir,%20I%20need%20information%20regarding%20seat%20booking%20at%20Baba%20Kinaram%20Digital%20Library`, '_blank');
     }
@@ -1699,6 +1876,7 @@
     function exportDataBackupFile() {
       const dump = {
         library: APP_CONFIG.name,
+        address: APP_CONFIG.address,
         timings: APP_CONFIG.hours,
         totalSeats: APP_CONFIG.totalSeats,
         exportedAt: new Date().toISOString(),
@@ -1716,6 +1894,7 @@
       anchor.remove();
     }
 
+    /* ================= PWA STANDALONE SETTINGS ================= */
     function setupPwaCapabilities() {
       const dynamicManifest = {
         name: "Digital Library",
@@ -1755,7 +1934,7 @@
           pwaInstallPrompt = null;
         });
       } else {
-        alert("To install this app on your phone, tap the browser menu (⋮) and select 'Install app' or 'Add to Home Screen'.");
+        alert("To install Digital Library on your phone, tap the browser menu (⋮) and select 'Install app' or 'Add to Home Screen'.");
       }
     }
   </script>
