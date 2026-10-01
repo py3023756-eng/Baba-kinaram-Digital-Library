@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#091e3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Baba Kinaram Digital Library - Management App</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              950: '#061325',
+              900: '#091e3a',
+              850: '#0e2649',
+              800: '#143158',
+              700: '#1d4273',
+              accent: '#38bdf8',
+              cyan: '#0284c7',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#ef4444'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    * {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, textarea, select {
+      user-select: text;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.9; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.08); }
+    }
+    .pulse-glow {
+      animation: pulseGlow 2.5s infinite ease-in-out;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
+  <!-- Top App Bar -->
+  <header class="bg-brand-900/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40 px-4 py-2.5 shadow-xl">
+    <div class="max-w-2xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-sky-400 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white font-black text-sm">
+          BK
+        </div>
+        <div>
+          <h1 class="text-sm font-extrabold text-white tracking-tight flex items-center gap-1.5">
+            Baba Kinaram
+            <span class="text-[10px] font-bold px-1.5 py-0.2 rounded-md bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Digital</span>
+          </h1>
+          <p class="text-[11px] text-slate-400 flex items-center gap-1">
+            <i class="fas fa-map-marker-alt text-cyan-400 text-[9px]"></i> Behind Hanuman Mandir, Ramgarh
+          </p>
+        </div>
+      </div>
+
+      <!-- Header Action Controls -->
+      <div class="flex items-center space-x-1.5">
+        <!-- PWA Install Trigger -->
+        <button id="pwaInstallBannerBtn" onclick="triggerPwaInstall()" class="hidden text-[11px] bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-2.5 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
+          <i class="fas fa-arrow-down-to-bracket text-xs"></i>
+          <span>Install</span>
+        </button>
+
+        <!-- Role Badge Switcher -->
+        <button onclick="toggleRoleModal()" id="roleSwitcherTrigger" class="text-xs bg-slate-850 hover:bg-slate-800 border border-slate-700/80 px-2.5 py-1.5 rounded-lg text-slate-200 font-semibold flex items-center gap-1.5 transition">
+          <i class="fas fa-user-graduate text-cyan-400" id="currentRoleIcon"></i>
+          <span id="currentRoleText">Student</span>
+          <i class="fas fa-chevron-down text-[9px] text-slate-400 ml-0.5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Realtime Notice Broadcast Bar -->
+  <div id="noticeBanner" class="hidden bg-gradient-to-r from-amber-500/15 via-amber-600/25 to-amber-500/15 border-b border-amber-500/30 px-4 py-2">
+    <div class="max-w-2xl mx-auto flex items-center justify-between text-xs text-amber-200">
+      <div class="flex items-center space-x-2 overflow-hidden">
+        <span class="flex h-2 w-2 relative shrink-0">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+        </span>
+        <span class="text-[9px] font-extrabold uppercase tracking-wider bg-amber-500/30 text-amber-300 px-1.5 py-0.5 rounded shrink-0">Notice</span>
+        <p id="noticeBannerMessage" class="truncate font-medium text-amber-100/90 text-xs">
+          शांत वातावरण बनाए रखें। 1-2 घंटे का डेमो उपलब्ध है।
+        </p>
+      </div>
+      <button onclick="hideNoticeBanner()" class="text-amber-400 hover:text-amber-200 ml-2 shrink-0">
+        <i class="fas fa-times text-xs"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Application Body -->
+  <main class="flex-1 max-w-2xl w-full mx-auto p-4 pb-24 space-y-4">
+    
+    <!-- 1. STUDENT VIEW -->
+    <section id="studentPortalSection" class="space-y-4">
+      
+      <!-- Student Profile Card -->
+      <div class="bg-gradient-to-br from-brand-900 via-slate-900 to-slate-950 rounded-2xl p-4 border border-slate-800 shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-36 h-36 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex items-center justify-between relative z-10">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 rounded-xl bg-slate-800/90 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-lg font-black shadow-inner" id="activeStudentInitials">
+              R
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h2 class="text-base font-extrabold text-white tracking-wide" id="activeStudentName">Rahul Kumar</h2>
+                <span id="activeStudentDeskTag" class="text-[10px] px-2 py-0.5 rounded-full font-bold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  Desk #04
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5" id="activeStudentPhone">+91 9140176272</p>
+            </div>
+          </div>
+
+          <button onclick="openSelectStudentModal()" class="text-xs bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-xl font-semibold flex items-center gap-1.5 transition active:scale-95 shadow-sm">
+            <i class="fas fa-arrow-right-arrow-left text-[10px] text-cyan-400"></i>
+            <span>Switch</span>
+          </button>
+        </div>
+
+        <!-- Student Subscription Metrics -->
+        <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-center">
+          <div class="bg-slate-950/60 rounded-xl p-2 border border-slate-800/80">
+            <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Plan</p>
+            <p class="text-xs font-bold text-cyan-300 mt-0.5 truncate" id="activeStudentPlan">Full Day (12h)</p>
+          </div>
+          <div class="bg-slate-950/60 rounded-xl p-2 border border-slate-800/80">
+            <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Days Left</p>
+            <p class="text-xs font-bold text-emerald-400 mt-0.5" id="activeStudentDaysLeft">18 Days</p>
+          </div>
+          <div class="bg-slate-950/60 rounded-xl p-2 border border-slate-800/80">
+            <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Fee Status</p>
+            <p class="text-xs font-bold text-emerald-400 mt-0.5 flex items-center justify-center gap-1" id="activeStudentFeeStatusBadge">
+              <i class="fas fa-circle-check text-[9px]"></i> Paid
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Attendance Check-In / Check-Out Counter -->
+      <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 shadow-2xl text-center relative overflow-hidden bg-gradient-to-b from-slate-900 to-brand-950">
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-2 px-1">
+          <span class="flex items-center gap-1.5 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-glow"></span>
+            Hours: <strong class="text-emerald-400">8 AM – 8 PM Daily</strong>
+          </span>
+          <span class="font-bold bg-slate-800/90 px-2.5 py-1 rounded-full border border-slate-700/80 text-cyan-300 text-[11px]">
+            <i class="fas fa-chair text-[10px] mr-1"></i> <span id="portalOccupancyDisplay">14</span>/30 Occupied
+          </span>
+        </div>
+
+        <!-- Timer Display Area -->
+        <div class="py-4">
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest" id="liveTimerStatusTitle">
+            Current Study Duration
+          </p>
+          <div class="text-4xl sm:text-5xl font-black font-mono text-white tracking-tight my-1 drop-shadow-md" id="liveStudyTimer">
+            00:00:00
+          </div>
+          <p class="text-xs text-slate-400" id="liveTimerSubtitle">
+            हॉल में प्रवेश करते ही Check-In दबाएं
+          </p>
+        </div>
+
+        <!-- Check In / Check Out Action Button -->
+        <button id="mainAttendanceBtn" onclick="toggleStudentAttendance()" class="w-full py-4 px-6 rounded-xl font-extrabold text-base transition-all duration-200 transform active:scale-95 shadow-xl flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-emerald-500/20">
+          <i class="fas fa-right-to-bracket text-lg"></i>
+          <span>Check-In / उपस्थिति दर्ज करें</span>
+        </button>
+
+        <div class="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
+          <i class="fas fa-wifi text-cyan-400"></i>
+          <span>Library 5G Wi-Fi Network Connected</span>
+        </div>
+      </div>
+
+      <!-- Quick Action Utilities -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Fee Renewal via WhatsApp -->
+        <button onclick="handleStudentRenewFee()" class="bg-slate-900 hover:bg-slate-850 p-3.5 rounded-2xl border border-slate-800 text-left transition flex items-start space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-white group-hover:text-emerald-400 transition">Pay / Renew Fee</h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">UPI QR / WhatsApp</p>
+          </div>
+        </button>
+
+        <!-- Desk Issue Reporter -->
+        <button onclick="openReportIssueModal()" class="bg-slate-900 hover:bg-slate-850 p-3.5 rounded-2xl border border-slate-800 text-left transition flex items-start space-x-3 group">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition">
+            <i class="fas fa-triangle-exclamation"></i>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-white group-hover:text-amber-400 transition">Report Issue</h4>
+            <p class="text-[11px] text-slate-400 mt-0.5">Socket, AC, Light</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Library Shift Rates Card -->
+      <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-indian-rupee-sign text-cyan-400"></i>
+            <span>Library Fees & Shift Plans</span>
+          </h3>
+          <span class="text-[10px] text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+            Free Demo: 1-2 Hours
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-slate-200">10 Days Plan</span>
+              <span class="font-black text-cyan-300">₹200</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-0.5">Full Day Access</p>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-slate-200">15 Days Plan</span>
+              <span class="font-black text-cyan-300">₹300</span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-0.5">Half Month Access</p>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-slate-200">7 Hours Shift</span>
+              <span class="font-black text-emerald-400">₹400<span class="text-[10px] font-normal text-slate-400">/mo</span></span>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-0.5">Daily Flexible Hours</p>
+          </div>
+
+          <div class="p-2.5 rounded-xl bg-slate-950/70 border border-cyan-500/40 bg-cyan-950/20">
+            <div class="flex justify-between items-center">
+              <span class="font-semibold text-white">Full Day (12h)</span>
+              <span class="font-black text-cyan-300">₹600<span class="text-[10px] font-normal text-slate-400">/mo</span></span>
+            </div>
+            <p class="text-[10px] text-cyan-400/80 mt-0.5">8 AM to 8 PM • Reserved Seat</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Essential Library Rules -->
+      <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800">
+        <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-2.5 flex items-center gap-2">
+          <i class="fas fa-clipboard-check text-cyan-400"></i>
+          <span>लाइब्रेरी के नियम (Library Guidelines)</span>
+        </h3>
+        <ul class="space-y-2 text-xs text-slate-300">
+          <li class="flex items-start gap-2">
+            <i class="fas fa-check text-emerald-400 text-[10px] mt-1 shrink-0"></i>
+            <span>लाइब्रेरी हॉल में फोन अनिवार्य रूप से <strong>Silent</strong> पर रखें।</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fas fa-check text-emerald-400 text-[10px] mt-1 shrink-0"></i>
+            <span>बातचीत या फोन कॉल सुनने के लिए मुख्य हॉल से बाहर जाएं।</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="fas fa-check text-emerald-400 text-[10px] mt-1 shrink-0"></i>
+            <span>अपनी आवंटित डेस्क और चेयर को साफ रखें।</span>
+          </li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- 2. OWNER / ADMIN VIEW (PIN PROTECTED) -->
+    <section id="adminPortalSection" class="hidden space-y-4">
+      
+      <!-- Key Operational Metrics Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 shadow-md">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Inside Now</span>
+            <i class="fas fa-user-check text-emerald-400"></i>
+          </div>
+          <p class="text-2xl font-black text-white mt-1" id="metricInsideCount">0</p>
+          <p class="text-[10px] text-emerald-400 mt-0.5 font-medium">Currently in Hall</p>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 shadow-md">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Enrolled</span>
+            <i class="fas fa-users text-cyan-400"></i>
+          </div>
+          <p class="text-2xl font-black text-white mt-1" id="metricTotalStudents">0</p>
+          <p class="text-[10px] text-cyan-400 mt-0.5 font-medium">Total Students</p>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 shadow-md">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Revenue</span>
+            <i class="fas fa-indian-rupee-sign text-emerald-400"></i>
+          </div>
+          <p class="text-2xl font-black text-white mt-1" id="metricTotalRevenue">₹0</p>
+          <p class="text-[10px] text-slate-400 mt-0.5 font-medium">Collected Fees</p>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 shadow-md">
+          <div class="flex items-center justify-between text-slate-400 text-xs">
+            <span>Fee Due</span>
+            <i class="fas fa-clock text-amber-400"></i>
+          </div>
+          <p class="text-2xl font-black text-amber-400 mt-1" id="metricPendingFeeCount">0</p>
+          <p class="text-[10px] text-amber-400/80 mt-0.5 font-medium">Pending Dues</p>
+        </div>
+      </div>
+
+      <!-- Quick Admin Utilities Bar -->
+      <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 flex flex-wrap gap-2 items-center justify-between shadow-md">
+        <div class="flex items-center gap-2">
+          <button onclick="openStudentModal()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs px-3 py-2 rounded-xl flex items-center gap-1.5 transition shadow-sm active:scale-95">
+            <i class="fas fa-user-plus"></i>
+            <span>Add Student</span>
+          </button>
+
+          <button onclick="openNoticeBroadcastModal()" class="bg-slate-800 hover:bg-slate-755 text-amber-300 font-semibold text-xs px-3 py-2 rounded-xl border border-slate-700 flex items-center gap-1.5 transition active:scale-95">
+            <i class="fas fa-bullhorn text-xs"></i>
+            <span>Broadcast Notice</span>
+          </button>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button onclick="exportDataBackupFile()" class="text-slate-400 hover:text-slate-200 text-xs px-2.5 py-1.5 rounded-lg border border-slate-800 bg-slate-950 transition">
+            <i class="fas fa-file-arrow-down mr-1"></i> Backup
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Attendance Roster -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-glow"></span>
+            <span>Currently Present in Library</span>
+          </h3>
+          <span class="text-[11px] font-bold text-emerald-400" id="adminPresentBadge">0 Active</span>
+        </div>
+
+        <div class="space-y-2" id="currentlyPresentRoster">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Student Directory with Search and WhatsApp Fee Reminder -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
+          <div>
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+              <i class="fas fa-address-book text-cyan-400"></i>
+              <span>Student Directory & Fee Tracker</span>
+            </h3>
+            <p class="text-[11px] text-slate-400">Instant WhatsApp reminder on due fees</p>
+          </div>
+
+          <div class="relative">
+            <i class="fas fa-search absolute left-3 top-2.5 text-xs text-slate-500"></i>
+            <input type="text" id="adminSearchInput" onkeyup="filterAdminStudentRoster()" placeholder="Search name or phone..." class="bg-slate-950 border border-slate-800 text-xs text-slate-200 pl-8 pr-3 py-1.5 rounded-xl w-full sm:w-48 focus:border-cyan-400 outline-none">
+          </div>
+        </div>
+
+        <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-none" id="adminStudentRosterContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Desk Incident Issues List -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-wrench text-amber-400"></i>
+            <span>Desk Tickets & Maintenance</span>
+          </h3>
+          <span class="text-[11px] text-slate-400" id="adminTicketCountBadge">0 Tickets</span>
+        </div>
+
+        <div class="space-y-2" id="adminIssuesListContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Full Attendance History Log -->
+      <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-clock-rotate-left text-slate-400"></i>
+            <span>Today's Complete Movement Log</span>
+          </h3>
+          <button onclick="clearAllLogs()" class="text-[11px] text-rose-400 hover:underline">Clear History</button>
+        </div>
+
+        <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-none" id="adminMovementLogsContainer">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- MODAL: Role Switcher / Admin PIN Entry -->
+  <div id="roleModalOverlay" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
+      <button onclick="toggleRoleModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <h3 class="text-base font-extrabold text-white mb-1">Select View / भूमिका चुनें</h3>
+      <p class="text-xs text-slate-400 mb-4">Switch between Student Attendance or Owner Admin Panel</p>
+
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <button onclick="setAppRole('student')" class="p-3.5 rounded-xl border border-cyan-500/50 bg-cyan-950/30 text-center transition hover:border-cyan-400 active:scale-95">
+          <i class="fas fa-user-graduate text-cyan-400 text-2xl mb-1.5"></i>
+          <p class="text-xs font-bold text-white">Student Portal</p>
+          <p class="text-[10px] text-slate-400">Timer & Attendance</p>
+        </button>
+
+        <button onclick="revealAdminPinInput()" class="p-3.5 rounded-xl border border-slate-700 bg-slate-800/80 text-center transition hover:border-slate-600 active:scale-95">
+          <i class="fas fa-user-shield text-amber-400 text-2xl mb-1.5"></i>
+          <p class="text-xs font-bold text-white">Admin Dashboard</p>
+          <p class="text-[10px] text-slate-400">PIN Protected</p>
+        </button>
+      </div>
+
+      <div id="pinEntryWrapper" class="hidden pt-3 border-t border-slate-800">
+        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Enter Admin Password:</label>
+        <div class="flex gap-2">
+          <!-- maxlength बढ़कर 15 कर दिया गया है ताकि A$HIRV@D आराम से आ जाए -->
+          <input type="password" id="adminSecretPinInput" maxlength="15" placeholder="Password डालें..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-center tracking-widest text-white outline-none focus:border-cyan-400">
+          <button onclick="submitAdminPinCheck()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition">
+            Unlock
+          </button>
+        </div>
+        <p class="text-[10px] text-rose-400 mt-1 hidden" id="pinErrorAlert">गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Switch / Register Active Student -->
+  <div id="studentSwitcherModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative max-h-[85vh] flex flex-col">
+      <button onclick="closeSelectStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <h3 class="text-base font-extrabold text-white mb-1">Select Student Profile</h3>
+      <p class="text-xs text-slate-400 mb-3">अपना नाम चुनें या नया रजिस्ट्रेशन जोड़ें</p>
+
+      <div class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1 scrollbar-none" id="studentRosterSelectList">
+        <!-- Dynamically rendered -->
+      </div>
+
+      <button onclick="handleSelfRegisterClick()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-755 border border-slate-700 text-cyan-300 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition">
+        <i class="fas fa-plus-circle"></i>
+        <span>Register New Student / नया पंजीकरण</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL: Add / Edit Student (Owner & Self-Service) -->
+  <div id="studentEditModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <h3 class="text-base font-extrabold text-white mb-1" id="studentModalHeading">विद्यार्थी जोड़ें (Add Student)</h3>
+      <p class="text-xs text-slate-400 mb-4">Baba Kinaram Digital Library Record</p>
+
+      <form onsubmit="saveStudentForm(event)" class="space-y-3">
+        <input type="hidden" id="formStudentId" value="">
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">पूरा नाम (Full Name) *</label>
+          <input type="text" id="inputStudentName" required placeholder="उदा: Rahul Kumar" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">मोबाइल नंबर (10 Digit) *</label>
+            <input type="tel" id="inputStudentPhone" required pattern="[0-9]{10}" placeholder="9876543210" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">डेस्क / सीट नंबर</label>
+            <input type="text" id="inputStudentDesk" placeholder="उदा: Desk #05" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">प्लान (Study Plan) *</label>
+            <select id="inputStudentPlan" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+              <option value="10 Days (₹200)">10 Days - ₹200</option>
+              <option value="15 Days (₹300)">15 Days - ₹300</option>
+              <option value="7 Hours (₹400)">7 Hours Shift - ₹400/mo</option>
+              <option value="Full Day (₹600)" selected>Full Day 12h - ₹600/mo</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">शुल्क स्थिति (Fee Status)</label>
+            <select id="inputStudentFeeStatus" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+              <option value="Paid">Paid (जमा है)</option>
+              <option value="Pending">Pending (बाकी है)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">शुरुआत तिथि (Join Date)</label>
+            <input type="date" id="inputStudentJoinDate" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">वैधता (Validity Days)</label>
+            <input type="number" id="inputStudentValidityDays" value="30" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 mt-2 bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs rounded-xl transition">
+          सुरक्षित करें (Save Record)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Desk Issue Ticket Modal -->
+  <div id="issueTicketModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
+      <button onclick="closeReportIssueModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <h3 class="text-base font-extrabold text-white mb-1 flex items-center gap-2">
+        <i class="fas fa-triangle-exclamation text-amber-400"></i>
+        <span>डेस्क शिकायत / Issue Ticket</span>
+      </h3>
+      <p class="text-xs text-slate-400 mb-3">सीधे लाइब्रेरी एडमिन को टिकट भेजें</p>
+
+      <form onsubmit="submitIssueTicketForm(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">समस्या का प्रकार</label>
+          <select id="issueCategoryOption" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-cyan-400">
+            <option value="AC & Cooling Issue">AC या पंखे की समस्या</option>
+            <option value="Charging Socket / Light">चार्जिंग सॉकेट या लाइट बंद है</option>
+            <option value="Wi-Fi Internet Speed">5G Wi-Fi स्पीड समस्या</option>
+            <option value="Noise Disturbance">शोरगुल / डिस्टर्बेंस</option>
+            <option value="RO Water / Cleaning">RO पानी या सफाई संबंधी</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">विवरण (Issue Details)</label>
+          <textarea id="issueDescriptionText" rows="3" required placeholder="उदा: Desk #04 पर चार्जिंग सॉकेट काम नहीं कर रहा है..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-cyan-400"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition">
+          भेजें (Submit Issue)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Broadcast Notice (Owner Admin) -->
+  <div id="noticeModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
+      <button onclick="closeNoticeBroadcastModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+
+      <h3 class="text-base font-extrabold text-white mb-1 flex items-center gap-2">
+        <i class="fas fa-bullhorn text-amber-400"></i>
+        <span>Broadcast Notice</span>
+      </h3>
+      <p class="text-xs text-slate-400 mb-3">Send announcement to all active student portals</p>
+
+      <div class="space-y-3">
+        <textarea id="noticeTextInput" rows="3" placeholder="उदा: कल दोपहर 2 से 3 बजे तक मेंटेनेंस रहेगा..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white outline-none focus:border-cyan-400"></textarea>
+        
+        <div class="flex gap-2">
+          <button onclick="saveAndPublishNotice()" class="flex-1 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition">
+            Publish Notice
+          </button>
+          <button onclick="clearCurrentNotice()" class="py-2 px-3 bg-slate-800 text-slate-300 hover:text-white text-xs rounded-xl transition">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Quick Switcher Navigation -->
+  <footer class="fixed bottom-0 left-0 right-0 bg-brand-900/95 backdrop-blur-md border-t border-slate-800 py-2 px-4 z-40">
+    <div class="max-w-2xl mx-auto flex items-center justify-around">
+      <button onclick="setAppRole('student')" id="bottomNavStudent" class="flex flex-col items-center gap-0.5 text-cyan-400 transition">
+        <i class="fas fa-user-graduate text-base"></i>
+        <span class="text-[10px] font-bold">Student Portal</span>
+      </button>
+
+      <button onclick="callLibraryDirect()" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition">
+        <i class="fas fa-phone-alt text-base"></i>
+        <span class="text-[10px] font-medium">Call Admin</span>
+      </button>
+
+      <button onclick="openWhatsAppChatDirect()" class="flex flex-col items-center gap-0.5 text-emerald-400 hover:text-emerald-300 transition">
+        <i class="fab fa-whatsapp text-lg"></i>
+        <span class="text-[10px] font-medium">WhatsApp</span>
+      </button>
+
+      <button onclick="revealAdminPinInput(); toggleRoleModal();" id="bottomNavAdmin" class="flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition">
+        <i class="fas fa-lock text-base"></i>
+        <span class="text-[10px] font-medium">Admin Panel</span>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    /* BABA KINARAM DIGITAL LIBRARY - PWA APPLICATION CONTROLLER */
+
+    const APP_CONFIG = {
+      name: "Baba Kinaram Digital Library",
+      address: "Behind Hanuman Mandir, Ramgarh",
+      phone: "9140176272",
+      email: "ashirvadyadavv@gmail.com",
+      adminPin: "A$HIRV@D", // <- नया पासवर्ड यहाँ सेट हो गया है
+      totalSeats: 30
+    };
+
+    // Initial Demo Seed Records
+    const INITIAL_STUDENTS = [
+      {
+        id: "stu_1",
+        name: "Rahul Kumar",
+        phone: "9140176272",
+        desk: "Desk #04",
+        plan: "Full Day (₹600)",
+        joinDate: "2026-09-15",
+        validityDays: 30,
+        feeStatus: "Paid",
+        status: "In Library",
+        checkedInSince: Date.now() - (2 * 3600 * 1000 + 15 * 60 * 1000)
+      },
+      {
+        id: "stu_2",
+        name: "Amit Singh",
+        phone: "9876543210",
+        desk: "Desk #09",
+        plan: "7 Hours (₹400)",
+        joinDate: "2026-09-20",
+        validityDays: 30,
+        feeStatus: "Paid",
+        status: "In Library",
+        checkedInSince: Date.now() - (1 * 3600 * 1000 + 40 * 60 * 1000)
+      },
+      {
+        id: "stu_3",
+        name: "Pooja Yadav",
+        phone: "9988776655",
+        desk: "Desk #12",
+        plan: "Full Day (₹600)",
+        joinDate: "2026-09-01",
+        validityDays: 30,
+        feeStatus: "Pending",
+        status: "Out",
+        checkedInSince: null
+      },
+      {
+        id: "stu_4",
+        name: "Vikas Patel",
+        phone: "9123456780",
+        desk: "Desk #16",
+        plan: "15 Days (₹300)",
+        joinDate: "2026-09-25",
+        validityDays: 15,
+        feeStatus: "Paid",
+        status: "In Library",
+        checkedInSince: Date.now() - (45 * 60 * 1000)
+      }
+    ];
+
+    const INITIAL_LOGS = [
+      { id: "log_1", name: "Rahul Kumar", action: "Check-In", time: "08:15 AM", desk: "Desk #04" },
+      { id: "log_2", name: "Amit Singh", action: "Check-In", time: "08:50 AM", desk: "Desk #09" },
+      { id: "log_3", name: "Pooja Yadav", action: "Check-Out (4.2 hrs)", time: "01:20 PM", desk: "Desk #12" }
+    ];
+
+    const INITIAL_ISSUES = [
+      { id: "iss_1", student: "Amit Singh (Desk #09)", category: "AC & Cooling Issue", details: "हॉल का तापमान थोड़ा गर्म लग रहा है।", time: "10:30 AM", status: "Resolved" }
+    ];
+
+    // Storage Helpers
+    function readStorage(key, fallback) {
+      try {
+        const item = localStorage.getItem(`bkl_pwa_${key}`);
+        return item ? JSON.parse(item) : fallback;
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    function writeStorage(key, val) {
+      try {
+        localStorage.setItem(`bkl_pwa_${key}`, JSON.stringify(val));
+      } catch (e) {
+        console.error("Storage write failure", e);
+      }
+    }
+
+    // Application State
+    let students = readStorage('students', INITIAL_STUDENTS);
+    let movementLogs = readStorage('logs', INITIAL_LOGS);
+    let deskIssues = readStorage('issues', INITIAL_ISSUES);
+    let noticeMessage = readStorage('notice', "बाबा कीनाराम डिजिटल लाइब्रेरी में शांति बनाए रखें। 1 से 2 घंटे का फ्री डेमो नए विद्यार्थियों के लिए उपलब्ध है।");
+    let activeStudentId = localStorage.getItem('bkl_pwa_active_stu_id') || (students[0] ? students[0].id : null);
+    let currentRole = 'student';
+    let studyTimerInterval = null;
+    let pwaInstallPrompt = null;
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!students.find(s => s.id === activeStudentId) && students.length > 0) {
+        activeStudentId = students[0].id;
+      }
+
+      renderNotice();
+      renderStudentPortal();
+      renderAdminDashboard();
+      startLiveTimerCycle();
+      setupPwaCapabilities();
+    });
+
+    // PWA Manifest and Install Handling
+    function setupPwaCapabilities() {
+      const dynamicManifest = {
+        name: "Baba Kinaram Digital Library",
+        short_name: "BKL Library",
+        description: "Library attendance and management app for Baba Kinaram Digital Library Ramgarh",
+        start_url: window.location.href,
+        display: "standalone",
+        background_color: "#091e3a",
+        theme_color: "#091e3a",
+        icons: [
+          {
+            src: "https://placehold.co/192x192/091e3a/38bdf8.png?text=BKL",
+            sizes: "192x192",
+            type: "image/png"
+          },
+          {
+            src: "https://placehold.co/512x512/091e3a/38bdf8.png?text=BKL",
+            sizes: "512x512",
+            type: "image/png"
+          }
+        ]
+      };
+
+      const blob = new Blob([JSON.stringify(dynamicManifest)], { type: 'application/json' });
+      const manifestUrl = URL.createObjectURL(blob);
+      const linkTag = document.createElement('link');
+      linkTag.rel = 'manifest';
+      linkTag.href = manifestUrl;
+      document.head.appendChild(linkTag);
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        pwaInstallPrompt = e;
+        const btn = document.getElementById('pwaInstallBannerBtn');
+        if (btn) btn.classList.remove('hidden');
+      });
+    }
+
+    function triggerPwaInstall() {
+      if (pwaInstallPrompt) {
+        pwaInstallPrompt.prompt();
+        pwaInstallPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            document.getElementById('pwaInstallBannerBtn').classList.add('hidden');
+          }
+          pwaInstallPrompt = null;
+        });
+      } else {
+        alert("ऐप को होम स्क्रीन पर जोड़ने के लिए ब्राउज़र के शीर्ष 3 डॉट्स (⋮) पर क्लिक करें और 'Install app' या 'Add to Home Screen' चुनें।");
+      }
+    }
+
+    // Role Switching
+    function setAppRole(role) {
+      currentRole = role;
+      document.getElementById('roleModalOverlay').classList.add('hidden');
+
+      const studentSec = document.getElementById('studentPortalSection');
+      const adminSec = document.getElementById('adminPortalSection');
+      const roleText = document.getElementById('currentRoleText');
+      const roleIcon = document.getElementById('currentRoleIcon');
+      const navStudent = document.getElementById('bottomNavStudent');
+      const navAdmin = document.getElementById('bottomNavAdmin');
+
+      if (role === 'student') {
+        studentSec.classList.remove('hidden');
+        adminSec.classList.add('hidden');
+        roleText.innerText = "Student";
+        roleIcon.className = "fas fa-user-graduate text-cyan-400";
+        navStudent.className = "flex flex-col items-center gap-0.5 text-cyan-400 transition";
+        navAdmin.className = "flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition";
+        renderStudentPortal();
+      } else {
+        studentSec.classList.add('hidden');
+        adminSec.classList.remove('hidden');
+        roleText.innerText = "Admin";
+        roleIcon.className = "fas fa-user-shield text-amber-400";
+        navStudent.className = "flex flex-col items-center gap-0.5 text-slate-400 hover:text-slate-200 transition";
+        navAdmin.className = "flex flex-col items-center gap-0.5 text-amber-400 transition";
+        renderAdminDashboard();
+      }
+    }
+
+    function toggleRoleModal() {
+      const modal = document.getElementById('roleModalOverlay');
+      modal.classList.toggle('hidden');
+      document.getElementById('pinEntryWrapper').classList.add('hidden');
+      document.getElementById('pinErrorAlert').classList.add('hidden');
+      document.getElementById('adminSecretPinInput').value = '';
+    }
+
+    function revealAdminPinInput() {
+      document.getElementById('pinEntryWrapper').classList.remove('hidden');
+      document.getElementById('adminSecretPinInput').focus();
+    }
+
+    function submitAdminPinCheck() {
+      const pin = document.getElementById('adminSecretPinInput').value.trim();
+      // Case-sensitive check for A$HIRV@D
+      if (pin === APP_CONFIG.adminPin) {
+        setAppRole('admin');
+      } else {
+        document.getElementById('pinErrorAlert').classList.remove('hidden');
+      }
+    }
+
+    // Active Student Query
+    function getCurrentStudent() {
+      return students.find(s => s.id === activeStudentId) || students[0];
+    }
+
+    function renderStudentPortal() {
+      const student = getCurrentStudent();
+      if (!student) return;
+
+      document.getElementById('activeStudentName').innerText = student.name;
+      document.getElementById('activeStudentInitials').innerText = student.name.charAt(0).toUpperCase();
+      document.getElementById('activeStudentDeskTag').innerText = student.desk || 'General Seat';
+      document.getElementById('activeStudentPhone').innerText = `+91 ${student.phone}`;
+      document.getElementById('activeStudentPlan').innerText = student.plan;
+
+      // Validity Calculation
+      const joinTs = new Date(student.joinDate).getTime();
+      const elapsedDays = Math.floor((Date.now() - joinTs) / (1000 * 60 * 60 * 24));
+      const remainingDays = Math.max(0, (student.validityDays || 30) - elapsedDays);
+      document.getElementById('activeStudentDaysLeft').innerText = `${remainingDays} Days`;
+
+      // Fee status
+      const feeBadge = document.getElementById('activeStudentFeeStatusBadge');
+      if (student.feeStatus === 'Paid') {
+        feeBadge.className = "text-xs font-bold text-emerald-400 mt-0.5 flex items-center justify-center gap-1";
+        feeBadge.innerHTML = '<i class="fas fa-circle-check text-[9px]"></i> Paid';
+      } else {
+        feeBadge.className = "text-xs font-bold text-amber-400 mt-0.5 flex items-center justify-center gap-1";
+        feeBadge.innerHTML = '<i class="fas fa-clock text-[9px]"></i> Due';
+      }
+
+      // Occupancy
+      const countInside = students.filter(s => s.status === 'In Library').length;
+      document.getElementById('portalOccupancyDisplay').innerText = countInside;
+
+      updateAttendanceButtonUI();
+    }
+
+    function updateAttendanceButtonUI() {
+      const student = getCurrentStudent();
+      if (!student) return;
+
+      const isInside = student.status === 'In Library';
+      const btn = document.getElementById('mainAttendanceBtn');
+      const title = document.getElementById('liveTimerStatusTitle');
+      const subtitle = document.getElementById('liveTimerSubtitle');
+
+      if (isInside) {
+        btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base transition-all duration-200 transform active:scale-95 shadow-xl flex items-center justify-center gap-2.5 bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white shadow-rose-500/25";
+        btn.innerHTML = '<i class="fas fa-right-from-bracket text-lg"></i><span>Check-Out / प्रस्थान दर्ज करें</span>';
+        title.innerText = "Currently Active Study Session";
+        subtitle.innerText = "Library presence recorded • Focus on your target";
+      } else {
+        btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base transition-all duration-200 transform active:scale-95 shadow-xl flex items-center justify-center gap-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-emerald-500/25";
+        btn.innerHTML = '<i class="fas fa-right-to-bracket text-lg"></i><span>Check-In / उपस्थिति दर्ज करें</span>';
+        title.innerText = "Current Study Duration";
+        subtitle.innerText = "हॉल में प्रवेश करते ही Check-In दबाएं";
+        document.getElementById('liveStudyTimer').innerText = "00:00:00";
+      }
+    }
+
+    function toggleStudentAttendance() {
+      const student = getCurrentStudent();
+      if (!student) return;
+
+      const isInside = student.status === 'In Library';
+      const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      if (!isInside) {
+        student.status = 'In Library';
+        student.checkedInSince = Date.now();
+        movementLogs.unshift({
+          id: 'log_' + Date.now(),
+          name: student.name,
+          action: 'Check-In',
+          time: timeNow,
+          desk: student.desk || 'General Desk'
+        });
+      } else {
+        const diffMs = Date.now() - (student.checkedInSince || Date.now());
+        const totalHours = (diffMs / (1000 * 60 * 60)).toFixed(1);
+
+        student.status = 'Out';
+        student.checkedInSince = null;
+        movementLogs.unshift({
+          id: 'log_' + Date.now(),
+          name: student.name,
+          action: `Check-Out (${totalHours} hrs)`,
+          time: timeNow,
+          desk: student.desk || 'General Desk'
+        });
+      }
+
+      writeStorage('students', students);
+      writeStorage('logs', movementLogs);
+
+      renderStudentPortal();
+      renderAdminDashboard();
+    }
+
+    function startLiveTimerCycle() {
+      clearInterval(studyTimerInterval);
+      studyTimerInterval = setInterval(() => {
+        const student = getCurrentStudent();
+        if (student && student.status === 'In Library' && student.checkedInSince) {
+          const diffSec = Math.max(0, Math.floor((Date.now() - student.checkedInSince) / 1000));
+          const hh = String(Math.floor(diffSec / 3600)).padStart(2, '0');
+          const mm = String(Math.floor((diffSec % 3600) / 60)).padStart(2, '0');
+          const ss = String(diffSec % 60).padStart(2, '0');
+          document.getElementById('liveStudyTimer').innerText = `${hh}:${mm}:${ss}`;
+        }
+      }, 1000);
+    }
+
+    // Student Roster Switch Modal
+    function openSelectStudentModal() {
+      const container = document.getElementById('studentRosterSelectList');
+      container.innerHTML = students.map(s => `
+        <div onclick="applyActiveStudent('${s.id}')" class="p-3 rounded-xl border ${s.id === activeStudentId ? 'border-cyan-400 bg-cyan-950/40' : 'border-slate-800 bg-slate-950/60'} hover:border-slate-700 cursor-pointer flex items-center justify-between transition">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-8 h-8 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-cyan-300">
+              ${s.name.charAt(0).toUpperCase()}
+            </div>
+            <div>
+              <p class="text-xs font-bold text-white">${s.name}</p>
+              <p class="text-[10px] text-slate-400">${s.phone} • ${s.desk || 'General'}</p>
+            </div>
+          </div>
+          <span class="text-[10px] px-2 py-0.5 rounded font-semibold ${s.status === 'In Library' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'}">
+            ${s.status}
+          </span>
+        </div>
+      `).join('');
+
+      document.getElementById('studentSwitcherModal').classList.remove('hidden');
+    }
+
+    function closeSelectStudentModal() {
+      document.getElementById('studentSwitcherModal').classList.add('hidden');
+    }
+
+    function applyActiveStudent(id) {
+      activeStudentId = id;
+      localStorage.setItem('bkl_pwa_active_stu_id', id);
+      closeSelectStudentModal();
+      renderStudentPortal();
+    }
+
+    function renderAdminDashboard() {
+      const presentCount = students.filter(s => s.status === 'In Library').length;
+      const totalCount = students.length;
+      const feePendingCount = students.filter(s => s.feeStatus === 'Pending').length;
+
+      let totalCollected = 0;
+      students.forEach(s => {
+        if (s.feeStatus === 'Paid') {
+          if (s.plan.includes('200')) totalCollected += 200;
+          else if (s.plan.includes('300')) totalCollected += 300;
+          else if (s.plan.includes('400')) totalCollected += 400;
+          else if (s.plan.includes('600')) totalCollected += 600;
+        }
+      });
+
+      document.getElementById('metricInsideCount').innerText = presentCount;
+      document.getElementById('metricTotalStudents').innerText = totalCount;
+      document.getElementById('metricTotalRevenue').innerText = `₹${totalCollected}`;
+      document.getElementById('metricPendingFeeCount').innerText = feePendingCount;
+      document.getElementById('adminPresentBadge').innerText = `${presentCount} Active in Hall`;
+
+      renderPresentRoster();
+      renderAdminStudentDirectory();
+      renderAdminTickets();
+      renderMovementHistoryLogs();
+    }
+
+    function renderPresentRoster() {
+      const container = document.getElementById('currentlyPresentRoster');
+      const presentList = students.filter(s => s.status === 'In Library');
+
+      if (presentList.length === 0) {
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">वर्तमान में कोई छात्र उपस्थित नहीं है।</div>`;
+        return;
+      }
+
+      container.innerHTML = presentList.map(s => {
+        const elapsed = Date.now() - (s.checkedInSince || Date.now());
+        const totalMinutes = Math.floor(elapsed / 60000);
+        const hrs = Math.floor(totalMinutes / 60);
+        const mins = totalMinutes % 60;
+
+        return `
+          <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm">
+                ${s.name.charAt(0)}
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-xs font-bold text-white">${s.name}</h4>
+                  <span class="text-[10px] px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">${s.desk || 'General'}</span>
+                </div>
+                <p class="text-[10px] text-slate-400">Duration: <strong class="text-slate-200">${hrs}h ${mins}m</strong> • ${s.plan}</p>
+              </div>
+            </div>
+
+            <button onclick="forceStudentCheckOut('${s.id}')" class="text-xs bg-rose-500/15 hover:bg-rose-500/25 text-rose-400 border border-rose-500/40 px-2.5 py-1.5 rounded-lg font-medium transition flex items-center gap-1 active:scale-95">
+              <i class="fas fa-sign-out-alt text-[10px]"></i> Out
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAdminStudentDirectory(filter = '') {
+      const container = document.getElementById('adminStudentRosterContainer');
+      const q = filter.toLowerCase();
+
+      const matched = students.filter(s =>
+        s.name.toLowerCase().includes(q) ||
+        s.phone.includes(q) ||
+        (s.desk && s.desk.toLowerCase().includes(q))
+      );
+
+      if (matched.length === 0) {
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">कोई विद्यार्थी रिकॉर्ड नहीं मिला।</div>`;
+        return;
+      }
+
+      container.innerHTML = matched.map(s => `
+        <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-cyan-300">
+              ${s.name.charAt(0)}
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-bold text-white">${s.name}</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold ${s.feeStatus === 'Paid' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+                  ${s.feeStatus}
+                </span>
+                <span class="text-[10px] text-slate-400">${s.desk || 'No desk'}</span>
+              </div>
+              <p class="text-[11px] text-slate-400">${s.phone} • Plan: ${s.plan}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 self-end sm:self-center">
+            ${s.feeStatus === 'Pending' ? `
+              <button onclick="triggerWhatsAppReminder('${s.id}')" class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-2.5 py-1.5 rounded-lg flex items-center gap-1 shadow-sm transition active:scale-95">
+                <i class="fab fa-whatsapp"></i> Alert
+              </button>
+            ` : ''}
+
+            <button onclick="switchStudentFeeStatus('${s.id}')" title="Toggle Fee Status" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
+              <i class="fas fa-coins text-amber-400"></i>
+            </button>
+
+            <button onclick="openEditStudentModal('${s.id}')" title="Edit Student" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
+              <i class="fas fa-pen text-cyan-400"></i>
+            </button>
+
+            <button onclick="removeStudent('${s.id}')" title="Delete Student" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1.5 rounded-lg border border-slate-700">
+              <i class="fas fa-trash-alt text-rose-400"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterAdminStudentRoster() {
+      const q = document.getElementById('adminSearchInput').value;
+      renderAdminStudentDirectory(q);
+    }
+
+    function forceStudentCheckOut(id) {
+      const s = students.find(item => item.id === id);
+      if (s) {
+        const diff = Date.now() - (s.checkedInSince || Date.now());
+        const totalHrs = (diff / (1000 * 60 * 60)).toFixed(1);
+        s.status = 'Out';
+        s.checkedInSince = null;
+        movementLogs.unshift({
+          id: 'log_' + Date.now(),
+          name: s.name,
+          action: `Force Check-Out (${totalHrs} hrs)`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          desk: s.desk || 'General Desk'
+        });
+        writeStorage('students', students);
+        writeStorage('logs', movementLogs);
+        renderAdminDashboard();
+        renderStudentPortal();
+      }
+    }
+
+    function switchStudentFeeStatus(id) {
+      const s = students.find(item => item.id === id);
+      if (s) {
+        s.feeStatus = s.feeStatus === 'Paid' ? 'Pending' : 'Paid';
+        writeStorage('students', students);
+        renderAdminDashboard();
+        renderStudentPortal();
+      }
+    }
+
+    function removeStudent(id) {
+      if (confirm("क्या आप वाकई इस छात्र का रिकॉर्ड हटाना चाहते हैं?")) {
+        students = students.filter(s => s.id !== id);
+        writeStorage('students', students);
+        renderAdminDashboard();
+        renderStudentPortal();
+      }
+    }
+
+    function triggerWhatsAppReminder(id) {
+      const s = students.find(item => item.id === id);
+      if (!s) return;
+
+      const message = `नमस्ते ${s.name} जी,%0A%0Aयह *Baba Kinaram Digital Library (Behind Hanuman Mandir, Ramgarh)* से आपकी लाइब्रेरी फीस का रिमाइंडर है।%0A%0A📌 *Plan:* ${encodeURIComponent(s.plan)}%0A💰 *Fee Status:* Due / Pending%0A%0Aकृपया अपनी सीट का नवीनीकरण (Renewal) कराएं ताकि अध्ययन में बाधा न आए।%0Aऑनलाइन भुगतान के लिए PhonePe/GPay: *${APP_CONFIG.phone}*%0Aधन्यवाद!`;
+      window.open(`https://wa.me/91${s.phone}?text=${message}`, '_blank');
+    }
+
+    // Student Add & Edit Form
+    function openStudentModal() {
+      document.getElementById('formStudentId').value = '';
+      document.getElementById('studentModalHeading').innerText = 'विद्यार्थी जोड़ें (Add Student)';
+      document.getElementById('inputStudentName').value = '';
+      document.getElementById('inputStudentPhone').value = '';
+      document.getElementById('inputStudentDesk').value = `Desk #${Math.floor(Math.random() * 25) + 1}`;
+      document.getElementById('inputStudentJoinDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('studentEditModal').classList.remove('hidden');
+    }
+
+    function handleSelfRegisterClick() {
+      closeSelectStudentModal();
+      openStudentModal();
+      document.getElementById('studentModalHeading').innerText = 'नया पंजीकरण (Self Register)';
+    }
+
+    function openEditStudentModal(id) {
+      const s = students.find(item => item.id === id);
+      if (!s) return;
+
+      document.getElementById('formStudentId').value = s.id;
+      document.getElementById('studentModalHeading').innerText = 'विद्यार्थी विवरण बदलें (Edit Student)';
+      document.getElementById('inputStudentName').value = s.name;
+      document.getElementById('inputStudentPhone').value = s.phone;
+      document.getElementById('inputStudentDesk').value = s.desk || '';
+      document.getElementById('inputStudentPlan').value = s.plan;
+      document.getElementById('inputStudentFeeStatus').value = s.feeStatus;
+      document.getElementById('inputStudentJoinDate').value = s.joinDate || new Date().toISOString().split('T')[0];
+      document.getElementById('inputStudentValidityDays').value = s.validityDays || 30;
+
+      document.getElementById('studentEditModal').classList.remove('hidden');
+    }
+
+    function closeStudentModal() {
+      document.getElementById('studentEditModal').classList.add('hidden');
+    }
+
+    function saveStudentForm(e) {
+      e.preventDefault();
+      const editId = document.getElementById('formStudentId').value;
+      const name = document.getElementById('inputStudentName').value.trim();
+      const phone = document.getElementById('inputStudentPhone').value.trim();
+      const desk = document.getElementById('inputStudentDesk').value.trim() || `Desk #${students.length + 1}`;
+      const plan = document.getElementById('inputStudentPlan').value;
+      const feeStatus = document.getElementById('inputStudentFeeStatus').value;
+      const joinDate = document.getElementById('inputStudentJoinDate').value || new Date().toISOString().split('T')[0];
+      const validityDays = parseInt(document.getElementById('inputStudentValidityDays').value) || 30;
+
+      if (editId) {
+        const s = students.find(item => item.id === editId);
+        if (s) {
+          s.name = name;
+          s.phone = phone;
+          s.desk = desk;
+          s.plan = plan;
+          s.feeStatus = feeStatus;
+          s.joinDate = joinDate;
+          s.validityDays = validityDays;
+        }
+      } else {
+        const newStudent = {
+          id: 'stu_' + Date.now(),
+          name,
+          phone,
+          desk,
+          plan,
+          feeStatus,
+          joinDate,
+          validityDays,
+          status: 'Out',
+          checkedInSince: null
+        };
+        students.push(newStudent);
+        activeStudentId = newStudent.id;
+      }
+
+      writeStorage('students', students);
+      closeStudentModal();
+      renderAdminDashboard();
+      renderStudentPortal();
+    }
+
+    // Desk Ticket Maintenance
+    function openReportIssueModal() {
+      document.getElementById('issueTicketModal').classList.remove('hidden');
+    }
+
+    function closeReportIssueModal() {
+      document.getElementById('issueTicketModal').classList.add('hidden');
+    }
+
+    function submitIssueTicketForm(e) {
+      e.preventDefault();
+      const currentStu = getCurrentStudent();
+      const cat = document.getElementById('issueCategoryOption').value;
+      const desc = document.getElementById('issueDescriptionText').value.trim();
+
+      const ticket = {
+        id: 'iss_' + Date.now(),
+        student: `${currentStu.name} (${currentStu.desk || 'General'})`,
+        category: cat,
+        details: desc,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: 'Open'
+      };
+
+      deskIssues.unshift(ticket);
+      writeStorage('issues', deskIssues);
+      closeReportIssueModal();
+      document.getElementById('issueDescriptionText').value = '';
+
+      alert("आपकी शिकायत एडमिन तक पहुंच गई है!");
+      renderAdminTickets();
+    }
+
+    function renderAdminTickets() {
+      const container = document.getElementById('adminIssuesListContainer');
+      document.getElementById('adminTicketCountBadge').innerText = `${deskIssues.length} Tickets`;
+
+      if (deskIssues.length === 0) {
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500 border border-slate-800/80 rounded-xl">कोई शिकायत दर्ज नहीं है।</div>`;
+        return;
+      }
+
+      container.innerHTML = deskIssues.map(iss => `
+        <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 flex items-start justify-between gap-2">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-white">${iss.category}</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded font-semibold ${iss.status === 'Resolved' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}">
+                ${iss.status}
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 mt-1">${iss.details}</p>
+            <p class="text-[10px] text-slate-500 mt-1">From: <strong>${iss.student}</strong> • ${iss.time}</p>
+          </div>
+
+          <button onclick="toggleTicketResolution('${iss.id}')" class="text-xs px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 hover:text-white shrink-0 active:scale-95">
+            ${iss.status === 'Resolved' ? 'Reopen' : 'Resolve'}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function toggleTicketResolution(id) {
+      const t = deskIssues.find(item => item.id === id);
+      if (t) {
+        t.status = t.status === 'Resolved' ? 'Open' : 'Resolved';
+        writeStorage('issues', deskIssues);
+        renderAdminTickets();
+      }
+    }
+
+    // Attendance Log Renderer
+    function renderMovementHistoryLogs() {
+      const container = document.getElementById('adminMovementLogsContainer');
+      if (movementLogs.length === 0) {
+        container.innerHTML = `<div class="p-3 text-center text-xs text-slate-500">कोई लॉग उपलब्ध नहीं है।</div>`;
+        return;
+      }
+
+      container.innerHTML = movementLogs.map(l => `
+        <div class="p-2 rounded-lg bg-slate-950/60 border border-slate-800/80 text-xs flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <span class="w-1.5 h-1.5 rounded-full ${l.action.includes('Check-In') ? 'bg-emerald-400' : 'bg-rose-400'}"></span>
+            <span class="font-semibold text-slate-200">${l.name}</span>
+            <span class="text-[10px] text-slate-500 font-mono">${l.desk || ''}</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="text-[10px] ${l.action.includes('Check-In') ? 'text-emerald-400 font-medium' : 'text-slate-400'}">${l.action}</span>
+            <span class="text-[10px] text-slate-500 font-mono">${l.time}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function clearAllLogs() {
+      if (confirm("क्या आप सारा उपस्थिति इतिहास हटाना चाहते हैं?")) {
+        movementLogs = [];
+        writeStorage('logs', movementLogs);
+        renderMovementHistoryLogs();
+      }
+    }
+
+    // Notice Broadcast System
+    function renderNotice() {
+      const banner = document.getElementById('noticeBanner');
+      if (noticeMessage && noticeMessage.trim() !== '') {
+        document.getElementById('noticeBannerMessage').innerText = noticeMessage;
+        banner.classList.remove('hidden');
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function hideNoticeBanner() {
+      document.getElementById('noticeBanner').classList.add('hidden');
+    }
+
+    function openNoticeBroadcastModal() {
+      document.getElementById('noticeTextInput').value = noticeMessage;
+      document.getElementById('noticeModal').classList.remove('hidden');
+    }
+
+    function closeNoticeBroadcastModal() {
+      document.getElementById('noticeModal').classList.add('hidden');
+    }
+
+    function saveAndPublishNotice() {
+      noticeMessage = document.getElementById('noticeTextInput').value.trim();
+      writeStorage('notice', noticeMessage);
+      closeNoticeBroadcastModal();
+      renderNotice();
+    }
+
+    function clearCurrentNotice() {
+      noticeMessage = "";
+      writeStorage('notice', "");
+      closeNoticeBroadcastModal();
+      renderNotice();
+    }
+
+    // Direct Quick Contacts
+    function handleStudentRenewFee() {
+      const stu = getCurrentStudent();
+      const msg = `नमस्ते सर,%0A%0Aमैं *${stu.name}* (Baba Kinaram Digital Library, Ramgarh).%0Aमुझे अपनी लाइब्रेरी फीस जमा करनी है।%0A%0A📌 *Plan:* ${encodeURIComponent(stu.plan)}%0A📍 *Desk:* ${encodeURIComponent(stu.desk || 'General Desk')}%0A%0Aकृपया UPI QR कोड भेजें।`;
+      window.open(`https://wa.me/91${APP_CONFIG.phone}?text=${msg}`, '_blank');
+    }
+
+    function openWhatsAppChatDirect() {
+      window.open(`https://wa.me/91${APP_CONFIG.phone}?text=Namaste%20Sir,%20Baba%20Kinaram%20Library%20Seat%20ki%20jankari%20chahiye`, '_blank');
+    }
+
+    function callLibraryDirect() {
+      window.location.href = `tel:+91${APP_CONFIG.phone}`;
+    }
+
+    function exportDataBackupFile() {
+      const dump = {
+        library: APP_CONFIG.name,
+        exportedAt: new Date().toISOString(),
+        students,
+        movementLogs,
+        deskIssues
+      };
+
+      const blobStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dump, null, 2));
+      const anchor = document.createElement('a');
+      anchor.setAttribute("href", blobStr);
+      anchor.setAttribute("download", `BKL_App_Backup_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    }
+  </script>
+</body>
+</html>
