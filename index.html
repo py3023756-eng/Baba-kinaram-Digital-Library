@@ -12,7 +12,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts: Inter & Dancing Script (Curly Font) -->
+  <!-- Google Fonts: Inter & Dancing Script -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -53,7 +53,6 @@
     @keyframes pulseGlow { 0%, 100% { opacity: 0.9; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.08); } }
     .pulse-glow { animation: pulseGlow 2.5s infinite ease-in-out; }
 
-    /* WATERMARK ANIMATION */
     @keyframes watermarkFloat {
       0% {
         transform: translateY(0px) rotate(-1deg);
@@ -77,11 +76,9 @@
 
 <body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-white">
 
-  <!-- ================= POPUP NOTICE (APP KHULTE HI AANE WALA) ================= -->
+  <!-- Startup Modal -->
   <div id="startupNoticeModal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity duration-300">
     <div class="bg-gradient-to-b from-brand-900 via-slate-900 to-slate-950 border border-cyan-500/40 rounded-3xl max-w-sm w-full p-6 shadow-2xl relative text-center">
-      
-      <!-- Top Badge / Icon -->
       <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300 text-2xl shadow-lg shadow-cyan-500/20">
         <i class="fas fa-sparkles"></i>
       </div>
@@ -93,15 +90,9 @@
       <h3 class="text-lg font-black text-white mb-2">Baba Kinaram Digital Library</h3>
       
       <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-4 text-xs text-slate-300 space-y-2 text-left mb-4">
-        <p class="leading-relaxed">
-          ✨ यह ऐप आपके लिए <strong class="text-emerald-400">100% मुफ़्त</strong> है।
-        </p>
-        <p class="leading-relaxed">
-          ⚡ इस ऐप को <strong class="text-cyan-400 font-bold">ASHIR X PRO</strong> द्वारा खास आपकी सुविधा और पढ़ाई के लिए तैयार किया गया है।
-        </p>
-        <p class="leading-relaxed">
-          ⏱️️ यह सिस्टम आपकी <strong class="text-white">लाइब्रेरी उपस्थिति (Attendance)</strong>, <strong class="text-white">स्टडी टाइमर</strong> और आपने आज कितने घंटे पढ़ाई की—यह सब लाइव मैनेज करेगा।
-        </p>
+        <p class="leading-relaxed">✨ यह ऐप आपके लिए <strong class="text-emerald-400">100% मुफ़्त</strong> है।</p>
+        <p class="leading-relaxed">⚡ इस ऐप को <strong class="text-cyan-400 font-bold">ASHIR X PRO</strong> द्वारा आपकी सुविधा और पढ़ाई के लिए तैयार किया गया है।</p>
+        <p class="leading-relaxed">⏱ लाइब्रेरी उपस्थिति (Attendance), स्टडी टाइमर और कुल पढ़ाई के घंटे लाइव मैनेज करें।</p>
       </div>
 
       <button onclick="closeStartupNotice()" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-sky-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 text-slate-950 font-black text-sm rounded-xl transition transform active:scale-95 shadow-xl shadow-cyan-500/25 flex items-center justify-center gap-2">
@@ -115,7 +106,7 @@
     </div>
   </div>
 
-  <!-- Top App Bar -->
+  <!-- Header -->
   <header class="bg-brand-900/95 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40 px-4 py-2.5 shadow-xl">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-2.5">
@@ -133,7 +124,6 @@
         </div>
       </div>
 
-      <!-- Header Action Controls -->
       <div class="flex items-center space-x-1.5">
         <button id="pwaInstallBannerBtn" onclick="triggerPwaInstall()" class="hidden text-[11px] bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-2.5 py-1.5 rounded-lg font-semibold transition flex items-center gap-1.5">
           <i class="fas fa-arrow-down-to-bracket text-xs"></i>
@@ -181,13 +171,11 @@
     </div>
   </div>
 
-  <!-- Main Application Body (pb-36 di hai taaki fixed watermark content ko na chhupaye) -->
+  <!-- Main Body -->
   <main class="flex-1 max-w-2xl w-full mx-auto p-4 pb-36 space-y-4">
     
     <!-- 1. STUDENT VIEW -->
     <section id="studentPortalSection" class="space-y-4">
-      
-      <!-- Student Profile Card -->
       <div class="bg-gradient-to-br from-brand-900 via-slate-900 to-slate-950 rounded-2xl p-4 border border-slate-800 shadow-xl relative overflow-hidden">
         <div class="absolute -right-10 -bottom-10 w-36 h-36 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -213,7 +201,6 @@
           </button>
         </div>
 
-        <!-- Student Subscription Metrics -->
         <div class="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-slate-800 text-center">
           <div class="bg-slate-950/60 rounded-xl p-2 border border-slate-800/80">
             <p class="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Plan</p>
@@ -232,7 +219,7 @@
         </div>
       </div>
 
-      <!-- Live Attendance Check-In / Check-Out Counter -->
+      <!-- Counter -->
       <div class="bg-slate-900/90 rounded-2xl p-5 border border-slate-800 shadow-2xl text-center relative overflow-hidden bg-gradient-to-b from-slate-900 to-brand-950">
         <div class="flex items-center justify-between text-xs text-slate-400 mb-2 px-1">
           <span class="flex items-center gap-1.5 font-medium">
@@ -267,7 +254,7 @@
         </div>
       </div>
 
-      <!-- Quick Action Utilities -->
+      <!-- Quick Action -->
       <div class="grid grid-cols-2 gap-3">
         <button onclick="handleStudentRenewFee()" class="bg-slate-900 hover:bg-slate-850 p-3.5 rounded-2xl border border-slate-800 text-left transition flex items-start space-x-3 group">
           <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-400 flex items-center justify-center text-lg shrink-0 group-hover:scale-105 transition">
@@ -337,7 +324,7 @@
         </div>
       </div>
 
-      <!-- Essential Library Rules -->
+      <!-- Rules -->
       <div class="bg-slate-900/80 rounded-2xl p-4 border border-slate-800">
         <h3 class="text-xs font-bold text-white uppercase tracking-wider mb-2.5 flex items-center gap-2">
           <i class="fas fa-clipboard-check text-cyan-400"></i>
@@ -358,13 +345,10 @@
           </li>
         </ul>
       </div>
-
     </section>
 
     <!-- 2. OWNER / ADMIN VIEW (PIN PROTECTED) -->
     <section id="adminPortalSection" class="hidden space-y-4">
-      
-      <!-- Key Operational Metrics Grid -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
         <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 shadow-md">
           <div class="flex items-center justify-between text-slate-400 text-xs">
@@ -424,7 +408,7 @@
         </div>
       </div>
 
-      <!-- Live Attendance Roster -->
+      <!-- Live Present -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -437,7 +421,7 @@
         <div class="space-y-2" id="currentlyPresentRoster"></div>
       </div>
 
-      <!-- Student Directory with Search, WhatsApp Invite & Fee Reminder -->
+      <!-- Student Directory -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-3">
           <div>
@@ -457,7 +441,7 @@
         <div class="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-none" id="adminStudentRosterContainer"></div>
       </div>
 
-      <!-- Desk Incident Issues List -->
+      <!-- Desk Incident Issues List (With Delete Button) -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -470,7 +454,7 @@
         <div class="space-y-2" id="adminIssuesListContainer"></div>
       </div>
 
-      <!-- Full Attendance History Log -->
+      <!-- Movement Logs -->
       <div class="bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-xl">
         <div class="flex items-center justify-between mb-3">
           <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
@@ -482,13 +466,11 @@
 
         <div class="space-y-1.5 max-h-48 overflow-y-auto pr-1 scrollbar-none" id="adminMovementLogsContainer"></div>
       </div>
-
     </section>
 
   </main>
 
-  <!-- ================= PERMANENT FIXED FLOATING WATERMARK (ALWAYS VISIBLE) ================= -->
-  <!-- Yeh hamesha screen par floating rahega, chahe student kitna bhi scroll kare -->
+  <!-- Watermark -->
   <div class="fixed bottom-14 left-0 right-0 z-30 pointer-events-none flex justify-center px-4">
     <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-950/85 border border-cyan-500/40 backdrop-blur-md shadow-2xl shadow-cyan-500/20">
       <span class="text-yellow-400 text-xs animate-bounce">⚡</span>
@@ -498,7 +480,7 @@
     </div>
   </div>
 
-  <!-- MODAL: Role Switcher / Admin PIN Entry -->
+  <!-- Role Switcher -->
   <div id="roleModalOverlay" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
       <button onclick="toggleRoleModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -525,7 +507,7 @@
       <div id="pinEntryWrapper" class="hidden pt-3 border-t border-slate-800">
         <label class="block text-xs font-semibold text-slate-300 mb-1.5">Enter Admin Password:</label>
         <div class="flex gap-2">
-          <input type="password" id="adminSecretPinInput" maxlength="15" placeholder="Password डालें..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-center tracking-widest text-white outline-none focus:border-cyan-400">
+          <input type="password" id="adminSecretPinInput" maxlength="20" placeholder="Password डालें..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-center tracking-widest text-white outline-none focus:border-cyan-400">
           <button onclick="submitAdminPinCheck()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs px-4 py-2 rounded-xl transition">
             Unlock
           </button>
@@ -535,7 +517,7 @@
     </div>
   </div>
 
-  <!-- MODAL: Switch Student Profile -->
+  <!-- Switch Student Profile -->
   <div id="studentSwitcherModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative max-h-[85vh] flex flex-col">
       <button onclick="closeSelectStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -543,7 +525,7 @@
       </button>
 
       <h3 class="text-base font-extrabold text-white mb-1">Select Student Profile</h3>
-      <p class="text-xs text-slate-400 mb-3">अपना नाम चुनें या नया रजिस्ट्रेशन जोड़ें</p>
+      <p class="text-xs text-slate-400 mb-3">अपना नाम चुनें या नया पंजीकरण जोड़ें</p>
 
       <div class="flex-1 overflow-y-auto space-y-2 mb-4 pr-1 scrollbar-none" id="studentRosterSelectList"></div>
 
@@ -554,7 +536,7 @@
     </div>
   </div>
 
-  <!-- MODAL: Add / Edit Student (With Auto WhatsApp Invite Option) -->
+  <!-- Add / Edit Student Modal -->
   <div id="studentEditModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] overflow-y-auto">
       <button onclick="closeStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -628,7 +610,7 @@
     </div>
   </div>
 
-  <!-- MODAL: Desk Issue Ticket Modal -->
+  <!-- Desk Issue Ticket Modal -->
   <div id="issueTicketModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
       <button onclick="closeReportIssueModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -665,7 +647,7 @@
     </div>
   </div>
 
-  <!-- MODAL: Broadcast Notice -->
+  <!-- Broadcast Notice -->
   <div id="noticeModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-5 shadow-2xl relative">
       <button onclick="closeNoticeBroadcastModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
@@ -693,7 +675,7 @@
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
+  <!-- Footer -->
   <footer class="fixed bottom-0 left-0 right-0 bg-brand-900/95 backdrop-blur-md border-t border-slate-800 py-2 px-4 z-40">
     <div class="max-w-2xl mx-auto flex items-center justify-around">
       <button onclick="setAppRole('student')" id="bottomNavStudent" class="flex flex-col items-center gap-0.5 text-cyan-400 transition">
@@ -726,7 +708,7 @@
       address: "Behind Hanuman Mandir, Ramgarh",
       phone: "9140176272",
       email: "ashirvadyadavv@gmail.com",
-      adminPin: "A$HIRV@D",
+      adminPin: "akhil@9140", // UPDATED PASSWORD
       totalSeats: 30
     };
 
@@ -777,7 +759,6 @@
     let studyTimerInterval = null;
     let pwaInstallPrompt = null;
 
-    // STARTUP NOTICE POPUP FUNCTION
     function closeStartupNotice() {
       const modal = document.getElementById('startupNoticeModal');
       modal.classList.add('opacity-0', 'pointer-events-none');
@@ -813,6 +794,7 @@
             writeStorage('students', students);
           }
           
+          // Only switch active student if user opened the invite link
           activeStudentId = existing.id;
           localStorage.setItem('bkl_pwa_active_stu_id', existing.id);
           
@@ -1356,7 +1338,7 @@
           checkedInSince: null
         };
         students.push(targetStudent);
-        activeStudentId = targetStudent.id;
+        // Note: Admin ke browser me active student switch nahi hoga jab tak invite link click na ho
       }
 
       writeStorage('students', students);
@@ -1401,6 +1383,7 @@
       renderAdminTickets();
     }
 
+    // Render Admin Tickets with Resolve & Delete Options
     function renderAdminTickets() {
       const container = document.getElementById('adminIssuesListContainer');
       document.getElementById('adminTicketCountBadge').innerText = `${deskIssues.length} Tickets`;
@@ -1423,9 +1406,14 @@
             <p class="text-[10px] text-slate-500 mt-1">From: <strong>${iss.student}</strong> • ${iss.time}</p>
           </div>
 
-          <button onclick="toggleTicketResolution('${iss.id}')" class="text-xs px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 hover:text-white shrink-0 active:scale-95">
-            ${iss.status === 'Resolved' ? 'Reopen' : 'Resolve'}
-          </button>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="toggleTicketResolution('${iss.id}')" class="text-xs px-2.5 py-1 rounded bg-slate-800 border border-slate-700 text-slate-300 hover:text-white active:scale-95">
+              ${iss.status === 'Resolved' ? 'Reopen' : 'Resolve'}
+            </button>
+            <button onclick="deleteIssueTicket('${iss.id}')" title="शिकायत हटाएं" class="text-xs px-2.5 py-1 rounded bg-rose-500/20 border border-rose-500/40 text-rose-400 hover:bg-rose-500/30 active:scale-95">
+              <i class="fas fa-trash-alt text-[10px]"></i>
+            </button>
+          </div>
         </div>
       `).join('');
     }
@@ -1434,6 +1422,14 @@
       const t = deskIssues.find(item => item.id === id);
       if (t) {
         t.status = t.status === 'Resolved' ? 'Open' : 'Resolved';
+        writeStorage('issues', deskIssues);
+        renderAdminTickets();
+      }
+    }
+
+    function deleteIssueTicket(id) {
+      if (confirm("क्या आप इस शिकायत टिकट को हटाना चाहते हैं?")) {
+        deskIssues = deskIssues.filter(item => item.id !== id);
         writeStorage('issues', deskIssues);
         renderAdminTickets();
       }
